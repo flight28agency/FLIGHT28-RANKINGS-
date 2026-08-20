@@ -1,0 +1,14 @@
+{
+  "name": "flight28-rankings",
+  "version": "1.0.0",
+  "description": "Flight28 weekly TikTok LIVE rankings tracker",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "express": "^5.1.0",
+    "tiktok-live-connector": "^2.1.1"
+  }
+}
