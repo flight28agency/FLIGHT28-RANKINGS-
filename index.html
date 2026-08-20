@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Flight28 LIVE Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow bg-glow-one"></div>
+  <div class="bg-glow bg-glow-two"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#">
+      <div class="brand-mark">F<span>28</span></div>
+      <div class="brand-copy">
+        <strong>FLIGHT28</strong>
+        <small>CREATOR NETWORK</small>
+      </div>
+    </a>
+
+    <div class="top-actions">
+      <span class="status-pill"><span class="dot"></span> Rankings Live</span>
+      <button class="ghost-btn" id="copyLinkBtn">Share</button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">FLIGHT28 CREATOR NETWORK</p>
+        <h1>LIVE <span>RANKINGS</span></h1>
+        <p class="subcopy">Track the top creators across the Flight28 network.</p>
+      </div>
+
+      <div class="reset-card">
+        <small id="resetLabel">DAILY RANKINGS RESET IN</small>
+        <strong id="countdown">00:00:00</strong>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-period="daily">Daily</button>
+        <button class="tab" data-period="weekly">Weekly</button>
+        <button class="tab" data-period="monthly">Monthly</button>
+        <button class="tab" data-period="alltime">All Time</button>
+      </div>
+
+      <label class="search-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+        <input id="searchInput" placeholder="Search creators" autocomplete="off" />
+      </label>
+    </section>
+
+    <section class="stats-row">
+      <article class="mini-stat">
+        <small>NETWORK CREATORS</small>
+        <strong id="networkCreators">0</strong>
+      </article>
+      <article class="mini-stat">
+        <small>PERIOD DIAMONDS</small>
+        <strong id="periodDiamonds">0</strong>
+      </article>
+      <article class="mini-stat">
+        <small>CREATORS LIVE</small>
+        <strong id="liveCreators">0</strong>
+      </article>
+    </section>
+
+    <section class="podium" id="podium"></section>
+
+    <section class="leaderboard-card">
+      <div class="table-head">
+        <div>RANK</div>
+        <div>CREATOR</div>
+        <div class="hide-mobile">LIVE HOURS</div>
+        <div class="hide-mobile">CHANGE</div>
+        <div>DIAMONDS</div>
+      </div>
+      <div id="leaderboardRows"></div>
+    </section>
+
+    <footer>
+      <div>
+        <strong>FLIGHT28</strong>
+        <span>Streamer to streamer.</span>
+      </div>
+      <p>Leaderboard data shown for demonstration. Connect your creator analytics source for automated live rankings.</p>
+    </footer>
+  </main>
+
+  <template id="rowTemplate">
+    <article class="leader-row">
+      <div class="rank-cell"></div>
+      <div class="creator-cell">
+        <div class="avatar-wrap">
+          <img class="avatar" alt="" />
+          <span class="live-badge">LIVE</span>
+        </div>
+        <div class="creator-meta">
+          <strong class="display-name"></strong>
+          <span class="username"></span>
+        </div>
+      </div>
+      <div class="hours-cell hide-mobile"></div>
+      <div class="change-cell hide-mobile"></div>
+      <div class="diamonds-cell">
+        <strong class="diamond-value"></strong>
+        <span>💎</span>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
