@@ -120,7 +120,6 @@ function renderRows() {
 
 function renderStats(){
   const total = creators.reduce((sum,c) => sum + c.diamonds[currentPeriod],0);
-  periodDiamondsEl.textContent = compactNum(total);
 }
 
 function render(){
