@@ -144,17 +144,7 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 
 
-document.querySelector("#copyLinkBtn").addEventListener("click", async () => {
-  const btn = document.querySelector("#copyLinkBtn");
-  try {
-    await navigator.clipboard.writeText(location.href);
-    btn.textContent = "Copied";
-    setTimeout(() => btn.textContent = "Share", 1500);
-  } catch {
-    btn.textContent = "Copy unavailable";
-    setTimeout(() => btn.textContent = "Share", 1500);
-  }
-});
+
 
 function updateCountdown() {
   const now = new Date();
