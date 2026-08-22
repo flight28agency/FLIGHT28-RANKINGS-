@@ -63,28 +63,42 @@ function changeMarkup(change) {
 }
 
 function renderPodium() {
-  const top = rankedCreators().slice(0,3);
+  const top = rankedCreators().slice(0, 3);
   const displayOrder = [top[1], top[0], top[2]];
-  const ranks = [2,1,3];
+  const ranks = [2, 1, 3];
+
   podiumEl.innerHTML = "";
 
   displayOrder.forEach((c, i) => {
     if (!c) return;
+
     const rank = ranks[i];
     const card = document.createElement("article");
-    card.className = `podium-card ${rank===1 ? "first" : ""}`;
-    card.style.setProperty("--podiumGlow", rank===1 ? "rgba(244,59,67,.20)" : "rgba(255,255,255,.05)");
+
+    card.className = `podium-card rank-${rank} ${rank === 1 ? "first" : ""}`;
+
     card.innerHTML = `
-      <span class="place-badge">#${rank}</span>
+      <div class="podium-rank-number">${rank}</div>
+
       <div class="podium-avatar-wrap">
-        <img class="podium-avatar" src="${c.avatar}" alt="${c.name}">
+        <img
+          class="podium-avatar"
+          src="${c.avatar}"
+          alt="${c.name}"
+        >
         ${c.live ? `<span class="podium-live">LIVE</span>` : ""}
       </div>
-      <h3>${c.name}</h3>
-      <span class="handle">${c.username}</span>
-      <div class="podium-score">${compactNum(c.diamonds[currentPeriod])} <span>💎</span></div>
-      <span class="mini-change">${c.hours[currentPeriod]} live hrs</span>
+
+      <div class="podium-info">
+        <h3>${c.name}</h3>
+
+        <div class="podium-score">
+          ${compactNum(c.diamonds[currentPeriod])}
+          <span>💎</span>
+        </div>
+      </div>
     `;
+
     podiumEl.appendChild(card);
   });
 }
