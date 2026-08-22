@@ -111,8 +111,9 @@ app.get("/api/leaderboard", async (req, res) => {
 
   const leaderboard = Object.entries(totals)
     .map(([username, diamonds]) => ({
-      username,
-      diamonds
+username,
+diamonds,
+live: liveCreators.has(username)
     }))
     .sort((a, b) => b.diamonds - a.diamonds);
 
