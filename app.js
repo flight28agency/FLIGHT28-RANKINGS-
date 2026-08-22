@@ -1,77 +1,40 @@
-const creators = [
-  {
-    name: "MoeJet",
-    username: "@moejet",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=MoeJet&backgroundColor=18181b&fontFamily=Arial",
-    live: true,
-    hours: {daily: 7.8, weekly: 41.2, monthly: 126.4, alltime: 2840},
-    diamonds: {daily: 412800, weekly: 2134000, monthly: 6840000, alltime: 100000000},
-    change: {daily: 2, weekly: 0, monthly: 1, alltime: 0}
-  },
-  {
-    name: "Emily Anne",
-    username: "@emilyanne",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Emily+Anne&backgroundColor=18181b&fontFamily=Arial",
-    live: true,
-    hours: {daily: 6.4, weekly: 36.5, monthly: 112.2, alltime: 1080},
-    diamonds: {daily: 356400, weekly: 1865000, monthly: 4920000, alltime: 22400000},
-    change: {daily: 1, weekly: 2, monthly: 0, alltime: 1}
-  },
-  {
-    name: "Troy",
-    username: "@troy",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Troy&backgroundColor=18181b&fontFamily=Arial",
-    live: false,
-    hours: {daily: 5.1, weekly: 32.8, monthly: 98.7, alltime: 920},
-    diamonds: {daily: 291200, weekly: 1530000, monthly: 4410000, alltime: 18100000},
-    change: {daily: -1, weekly: 1, monthly: 2, alltime: 0}
-  },
-  {
-    name: "Jada",
-    username: "@jada",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Jada&backgroundColor=18181b&fontFamily=Arial",
-    live: false,
-    hours: {daily: 4.8, weekly: 29.4, monthly: 91.2, alltime: 540},
-    diamonds: {daily: 238600, weekly: 1284000, monthly: 3800000, alltime: 12600000},
-    change: {daily: 3, weekly: -1, monthly: 1, alltime: 2}
-  },
-  {
-    name: "Sarah",
-    username: "@sarah",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Sarah&backgroundColor=18181b&fontFamily=Arial",
-    live: true,
-    hours: {daily: 4.2, weekly: 27.7, monthly: 86.8, alltime: 480},
-    diamonds: {daily: 195400, weekly: 1018000, monthly: 2970000, alltime: 9400000},
-    change: {daily: 1, weekly: 3, monthly: 0, alltime: 1}
-  },
-  {
-    name: "Desii",
-    username: "@desii",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Desii&backgroundColor=18181b&fontFamily=Arial",
-    live: false,
-    hours: {daily: 3.7, weekly: 23.1, monthly: 78.4, alltime: 410},
-    diamonds: {daily: 164900, weekly: 884000, monthly: 2410000, alltime: 8100000},
-    change: {daily: -2, weekly: 0, monthly: 2, alltime: -1}
-  },
-  {
-    name: "Ark",
-    username: "@ark",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Ark&backgroundColor=18181b&fontFamily=Arial",
-    live: false,
-    hours: {daily: 3.2, weekly: 20.8, monthly: 71.5, alltime: 360},
-    diamonds: {daily: 142200, weekly: 731000, monthly: 2030000, alltime: 6700000},
-    change: {daily: 2, weekly: -2, monthly: 0, alltime: 2}
-  },
-  {
-    name: "Creator Eight",
-    username: "@creator8",
-    avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Creator+Eight&backgroundColor=18181b&fontFamily=Arial",
-    live: false,
-    hours: {daily: 2.9, weekly: 18.5, monthly: 65.8, alltime: 320},
-    diamonds: {daily: 118500, weekly: 612000, monthly: 1780000, alltime: 5200000},
-    change: {daily: 0, weekly: 1, monthly: -1, alltime: 0}
+let creators = [];
+
+async function loadLeaderboard() {
+  try {
+    const response = await fetch("https://flight28-rankings-production.up.railway.app/api/leaderboard");
+    const data = await response.json();
+
+    creators = data.map((creator) => ({
+      name: creator.username,
+      username: `@${creator.username}`,
+      avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${creator.username}`,
+      live: false,
+      hours: {
+        daily: 0,
+        weekly: 0,
+        monthly: 0,
+        alltime: 0
+      },
+      diamonds: {
+        daily: Number(creator.diamonds || 0),
+        weekly: Number(creator.diamonds || 0),
+        monthly: Number(creator.diamonds || 0),
+        alltime: Number(creator.diamonds || 0)
+      },
+      change: {
+        daily: 0,
+        weekly: 0,
+        monthly: 0,
+        alltime: 0
+      }
+    }));
+
+    render();
+  } catch (error) {
+    console.error("Failed to load leaderboard:", error);
   }
-];
+}
 
 let currentPeriod = "daily";
 let searchTerm = "";
@@ -226,4 +189,4 @@ function updateCountdown() {
 
 setInterval(updateCountdown,1000);
 updateCountdown();
-render();
+loadLeaderboard();
