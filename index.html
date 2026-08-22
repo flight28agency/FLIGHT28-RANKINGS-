@@ -30,30 +30,25 @@
   </div>
 </header>
 
-<section class="controls">
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-period="daily">Daily</button>
-    <button class="tab" data-period="weekly">Weekly</button>
+<section class="ranking-main">
+
+  <div class="ranking-tabs" role="tablist">
+    <button class="tab active" data-period="daily">🔥 Daily Ranking</button>
+    <button class="tab" data-period="weekly">Weekly Ranking</button>
   </div>
 
-  <div class="reset-card">
-    <small id="resetLabel">DAILY RANKINGS RESET IN</small>
+  <div class="ranking-reset">
+    <span id="resetLabel">Next reset:</span>
     <strong id="countdown">00:00:00</strong>
   </div>
+
+  <section class="podium" id="podium"></section>
+
+  <section class="leaderboard-card">
+    <div id="leaderboardRows"></div>
+  </section>
+
 </section>
-
-    <section class="podium" id="podium"></section>
-
-    <section class="leaderboard-card">
-      <div class="table-head">
-        <div>RANK</div>
-        <div>CREATOR</div>
-        <div class="hide-mobile">LIVE HOURS</div>
-        <div class="hide-mobile">CHANGE</div>
-        <div>DIAMONDS</div>
-      </div>
-      <div id="leaderboardRows"></div>
-    </section>
 
     <footer>
       <div>
