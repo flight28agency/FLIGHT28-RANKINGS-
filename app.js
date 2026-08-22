@@ -9,7 +9,7 @@ async function loadLeaderboard() {
       name: creator.username,
       username: `@${creator.username}`,
       avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${creator.username}`,
-      live: false,
+      live: Boolean(creator.live),
       hours: {
         daily: 0,
         weekly: 0,
