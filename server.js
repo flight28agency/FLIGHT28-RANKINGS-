@@ -1,8 +1,7 @@
 const express = require("express");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
-const { WebcastPushConnection } = require("tiktok-live-connector");
-
+const { TikTokLiveConnection } = require("tiktok-live-connector");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
