@@ -77,6 +77,38 @@ function connectCreator(username) {
 
 creators.forEach(connectCreator);
 
+app.get("/api/leaderboard", async (req, res) => {
+  const { data, error } = await supabase
+    .from("gift_events")
+    .select("creator_username, diamonds, created_at");
+
+  if (error) {
+    console.error("Leaderboard error:", error.message);
+    return res.status(500).json({ error: error.message });
+  }
+
+  const totals = {};
+
+  for (const gift of data || []) {
+    const username = gift.creator_username;
+
+    if (!totals[username]) {
+      totals[username] = 0;
+    }
+
+    totals[username] += Number(gift.diamonds || 0);
+  }
+
+  const leaderboard = Object.entries(totals)
+    .map(([username, diamonds]) => ({
+      username,
+      diamonds
+    }))
+    .sort((a, b) => b.diamonds - a.diamonds);
+
+  res.json(leaderboard);
+});
+
 app.listen(PORT, () => {
   console.log(`Flight28 tracker running on port ${PORT}`);
 });
