@@ -124,9 +124,6 @@ const visible = getVisibleCreators().filter(c => rankedCreators().findIndex(x =>
     img.alt = c.name;
 
     node.querySelector(".display-name").textContent = c.name;
-    node.querySelector(".username").textContent = c.username;
-    node.querySelector(".hours-cell").textContent = `${c.hours[currentPeriod]} hrs`;
-    node.querySelector(".change-cell").innerHTML = changeMarkup(c.change[currentPeriod]);
     node.querySelector(".diamond-value").textContent = formatNum(c.diamonds[currentPeriod]);
 
     rowsEl.appendChild(node);
