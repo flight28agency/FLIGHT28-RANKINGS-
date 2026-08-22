@@ -143,10 +143,6 @@ document.querySelectorAll(".tab").forEach(tab => {
   });
 });
 
-document.querySelector("#searchInput").addEventListener("input", e => {
-  searchTerm = e.target.value;
-  renderRows();
-});
 
 document.querySelector("#copyLinkBtn").addEventListener("click", async () => {
   const btn = document.querySelector("#copyLinkBtn");
