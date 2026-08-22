@@ -47,7 +47,7 @@ async function saveGift(username, gift) {
 }
 
 function connectCreator(username) {
-  const connection = new WebcastPushConnection(username, {
+  const connection = new TikTokLiveConnection(username, {
     enableExtendedGiftInfo: true
   });
 
