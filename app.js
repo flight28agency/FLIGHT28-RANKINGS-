@@ -120,7 +120,6 @@ function renderRows() {
 }
 
 function renderStats(){
-  networkCreatorsEl.textContent = creators.length;
   liveCreatorsEl.textContent = creators.filter(c => c.live).length;
   const total = creators.reduce((sum,c) => sum + c.diamonds[currentPeriod],0);
   periodDiamondsEl.textContent = compactNum(total);
