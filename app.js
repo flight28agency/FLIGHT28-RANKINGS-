@@ -104,7 +104,7 @@ function renderPodium() {
 }
 
 function renderRows() {
-  const visible = getVisibleCreators();
+const visible = getVisibleCreators().filter(c => rankedCreators().findIndex(x => x.username === c.username) >= 3);
   rowsEl.innerHTML = "";
 
   visible.forEach((c) => {
