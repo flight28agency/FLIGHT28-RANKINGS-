@@ -3,6 +3,12 @@ const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { TikTokLiveConnection } = require("tiktok-live-connector");
 const app = express();
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://flight28agency.github.io");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 const PORT = process.env.PORT || 3000;
 
 const supabase = createClient(
