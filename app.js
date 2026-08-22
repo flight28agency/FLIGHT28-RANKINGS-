@@ -109,6 +109,7 @@ const visible = getVisibleCreators().filter(c => rankedCreators().findIndex(x =>
 
   visible.forEach((c) => {
     const actualRank = rankedCreators().findIndex(x => x.username === c.username) + 1;
+    if (actualRank <= 3) return;
     const node = rowTemplate.content.cloneNode(true);
     const row = node.querySelector(".leader-row");
     const rank = node.querySelector(".rank-cell");
