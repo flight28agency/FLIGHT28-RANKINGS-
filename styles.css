@@ -274,13 +274,13 @@ h1 span{
 
 /* COUNTDOWN */
 .reset-card{
-  min-width:250px;
-  padding:21px 24px;
-  border-radius:18px;
-  background:
-    linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  min-width:220px;
+  padding:12px 18px;
+  border-radius:14px;
+  text-align:center;
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
   border:1px solid var(--f28-line);
-  box-shadow:0 20px 60px rgba(0,0,0,.28);
+  box-shadow:0 12px 35px rgba(0,0,0,.22);
 }
 
 .reset-card strong{
@@ -307,6 +307,17 @@ h1 span{
   margin-bottom:22px;
 }
 
+
+
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  padding:5px;
+  border:1px solid var(--f28-line);
+  background:#09090b;
+  border-radius:16px;
+}
 .tab{
   min-width:125px;
   padding:13px 28px;
