@@ -830,3 +830,164 @@ footer{
     height:54px;
   }
 }
+
+/* =========================================
+   FLIGHT28 DESKTOP PODIUM
+   TikTok-inspired 2 / 1 / 3 layout
+   ========================================= */
+
+@media (min-width:761px){
+
+  .ranking-main{
+    width:min(100% - 60px,1100px);
+    padding-top:42px;
+  }
+
+  /* TOP CONTROLS */
+
+  .ranking-tabs{
+    justify-content:flex-start;
+    margin-bottom:26px;
+  }
+
+  .ranking-reset{
+    margin-bottom:72px;
+  }
+
+  /* TOP 3 */
+
+  .ranking-main .podium{
+    display:grid;
+    grid-template-columns:1fr 1.12fr 1fr;
+    align-items:end;
+    gap:14px;
+    max-width:900px;
+    min-height:360px;
+    margin:0 auto 55px;
+  }
+
+  .ranking-main .podium-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    min-height:285px;
+    padding:30px 15px 26px;
+    background:#202020;
+    border:0;
+    border-radius:5px;
+    overflow:hidden;
+  }
+
+  .ranking-main .podium-card.first{
+    min-height:335px;
+    transform:none;
+    background:#242424;
+  }
+
+  /* GIANT 2 / 1 / 3 */
+
+  .podium-rank-number{
+    position:absolute;
+    top:-25px;
+    right:4px;
+    z-index:0;
+    font-size:245px;
+    line-height:1;
+    font-weight:900;
+    letter-spacing:-.09em;
+    color:#747474;
+    opacity:.48;
+    pointer-events:none;
+  }
+
+  .rank-1 .podium-rank-number{
+    font-size:285px;
+    top:-30px;
+    color:#ff2b2f;
+    opacity:.65;
+  }
+
+  .rank-2 .podium-rank-number{
+    color:#bfc4cb;
+  }
+
+  .rank-3 .podium-rank-number{
+    color:#b77d6c;
+  }
+
+  /* PROFILE PICTURES */
+
+  .ranking-main .podium-avatar-wrap{
+    position:relative;
+    z-index:2;
+    width:112px;
+    height:112px;
+    margin:0 auto 18px;
+  }
+
+  .ranking-main .first .podium-avatar-wrap{
+    width:132px;
+    height:132px;
+  }
+
+  .ranking-main .podium-avatar{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+    border:5px solid #111;
+  }
+
+  .ranking-main .first .podium-avatar{
+    border-color:#ff2b2f;
+  }
+
+  .podium-live{
+    position:absolute;
+    bottom:-4px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:3px 8px;
+    border-radius:999px;
+    background:#ff2b2f;
+    color:#fff;
+    font-size:9px;
+    font-weight:900;
+  }
+
+  /* NAME + DIAMONDS */
+
+  .podium-info{
+    position:relative;
+    z-index:3;
+    width:100%;
+    text-align:center;
+  }
+
+  .podium-info h3{
+    margin:0 0 10px;
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .podium-score{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+    color:#aaa;
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .rank-1 .podium-score{
+    color:#fff;
+  }
+
+}
