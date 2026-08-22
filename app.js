@@ -43,7 +43,6 @@ const podiumEl = document.querySelector("#podium");
 const rowsEl = document.querySelector("#leaderboardRows");
 const rowTemplate = document.querySelector("#rowTemplate");
 const periodDiamondsEl = document.querySelector("#periodDiamonds");
-const liveCreatorsEl = document.querySelector("#liveCreators");
 const networkCreatorsEl = document.querySelector("#networkCreators");
 
 const formatNum = value => new Intl.NumberFormat("en-US", {maximumFractionDigits: 0}).format(value);
