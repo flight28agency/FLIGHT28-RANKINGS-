@@ -55,7 +55,8 @@ async function saveGift(username, gift) {
 
 function connectCreator(username) {
   const connection = new TikTokLiveConnection(username, {
-    enableExtendedGiftInfo: true
+    enableExtendedGiftInfo: true,
+    signApiKey: process.env.EULER_API_KEY
   });
 
   connection.connect()
