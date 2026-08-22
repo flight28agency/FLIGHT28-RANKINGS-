@@ -23,6 +23,7 @@ const creators = [
   "kaitlynnalexx13"
 ];
 
+const liveCreators = new Set();
 app.use(express.static(__dirname));
 
 app.get("/health", (req, res) => {
@@ -60,7 +61,9 @@ function connectCreator(username) {
   connection.connect()
     .then(state => {
       console.log(`Connected to @${username}`, state.roomId);
+      liveCreators.add(username);
     })
+    
     .catch(err => {
       console.log(`@${username} offline/unavailable:`, err.message);
     });
@@ -74,7 +77,8 @@ function connectCreator(username) {
 
   connection.on("disconnected", () => {
     console.log(`Disconnected from @${username}`);
-
+liveCreators.delete(username);
+    
     setTimeout(() => {
       connectCreator(username);
     }, 30000);
