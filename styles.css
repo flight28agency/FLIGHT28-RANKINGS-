@@ -1230,7 +1230,200 @@ footer{
     font-size:15px !important;
     margin-top:5px !important;
 }
+/* =========================================
+   FLIGHT28 TIKTOK GOLD PODIUM STYLE
+========================================= */
 
+@media(max-width:760px){
+
+.ranking-main .podium{
+
+    display:grid;
+    grid-template-columns:1fr 1.12fr 1fr;
+    gap:8px;
+
+    align-items:end;
+
+    margin-top:40px;
+    margin-bottom:35px;
+
+}
+
+
+/* CARDS */
+
+.ranking-main .podium-card{
+
+    position:relative;
+
+    height:190px;
+    min-height:190px;
+
+    padding:0;
+
+    border-radius:4px;
+
+    background:#2b2b2b;
+
+    overflow:hidden;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+}
+
+
+/* CENTER #1 */
+
+.ranking-main .podium-card.first{
+
+    height:225px;
+
+    min-height:225px;
+
+    transform:translateY(-15px);
+
+}
+
+
+
+/* GIANT NUMBERS */
+
+.podium-rank-number{
+
+    position:absolute;
+
+    top:-25px;
+
+    right:-5px;
+
+    font-size:210px;
+
+    line-height:1;
+
+    font-weight:900;
+
+    opacity:.85;
+
+    z-index:0;
+
+}
+
+
+/* GOLD */
+
+.rank-1 .podium-rank-number{
+
+    color:#e7c76b;
+
+}
+
+
+/* SILVER */
+
+.rank-2 .podium-rank-number{
+
+    color:#d7dbe2;
+
+}
+
+
+/* BRONZE */
+
+.rank-3 .podium-rank-number{
+
+    color:#d09a7b;
+
+}
+
+
+
+/* AVATAR CENTER */
+
+.ranking-main .podium-avatar-wrap{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:82px;
+
+    height:82px;
+
+    z-index:2;
+
+}
+
+
+
+.ranking-main .first .podium-avatar-wrap{
+
+    width:100px;
+
+    height:100px;
+
+}
+
+
+
+.ranking-main .podium-avatar{
+
+    border:3px solid #111;
+
+}
+
+
+
+/* TEXT BOTTOM */
+
+.ranking-main .podium-info{
+
+    position:absolute;
+
+    bottom:18px;
+
+    width:100%;
+
+    text-align:center;
+
+    z-index:3;
+
+}
+
+
+
+.ranking-main .podium-info h3{
+
+    font-size:13px;
+
+    margin:0 0 8px;
+
+    color:white;
+
+}
+
+
+
+.ranking-main .podium-score{
+
+    font-size:15px;
+
+    margin:0;
+
+    color:white;
+
+}
+
+
+
+}
 
 /* LOWER RANKINGS */
 
@@ -1253,165 +1446,5 @@ footer{
 .ranking-main .diamond-value{
     font-size:16px;
 }
-
-}
-/* =========================================
-   FLIGHT28 MOBILE FINAL COMPACT TUNE
-========================================= */
-
-@media(max-width:760px){
-
-    .ranking-main .podium-card{
-        min-height:170px !important;
-        padding-bottom:8px !important;
-    }
-
-
-    .ranking-main .podium-card.first{
-        min-height:205px !important;
-    }
-
-
-    .ranking-main .podium-avatar-wrap{
-        transform:none !important;
-        margin-bottom:5px !important;
-    }
-
-
-    .ranking-main .podium-info{
-        transform:none !important;
-    }
-
-
-    .ranking-main .podium-info h3{
-        margin:2px 0 4px !important;
-    }
-
-
-    .ranking-main .podium-score{
-        margin-top:0 !important;
-    }
-
-}
-/* =========================================
-   FLIGHT28 PODIUM CENTER + SQUARE FIX
-========================================= */
-
-@media(max-width:760px){
-
-    .ranking-main .podium{
-        gap:8px !important;
-        margin-top:45px !important;
-    }
-
-
-    .ranking-main .podium-card{
-
-        height:175px !important;
-        min-height:175px !important;
-
-        aspect-ratio:1 / 1;
-
-        padding:0 !important;
-
-        justify-content:center !important;
-
-    }
-
-
-    .ranking-main .podium-card.first{
-
-        height:205px !important;
-        min-height:205px !important;
-
-        transform:translateY(-15px) !important;
-
-    }
-
-
-    /* LARGE NUMBERS FULL CARD */
-
-    .podium-rank-number{
-
-        position:absolute !important;
-
-        top:50% !important;
-        right:50% !important;
-
-        transform:translate(50%,-50%) !important;
-
-        font-size:170px !important;
-
-        line-height:.8 !important;
-
-        opacity:.35 !important;
-
-        z-index:0 !important;
-
-    }
-
-
-    .rank-1 .podium-rank-number{
-
-        font-size:210px !important;
-
-        color:#ff2b2f !important;
-
-    }
-
-
-    /* CENTER PROFILE */
-
-    .ranking-main .podium-avatar-wrap{
-
-        position:relative;
-
-        width:70px !important;
-        height:70px !important;
-
-        margin:0 auto 8px !important;
-
-        z-index:2 !important;
-
-    }
-
-
-    .ranking-main .first .podium-avatar-wrap{
-
-        width:88px !important;
-        height:88px !important;
-
-    }
-
-
-    /* TEXT */
-
-    .ranking-main .podium-info{
-
-        position:relative;
-
-        z-index:3;
-
-        text-align:center;
-
-    }
-
-
-    .ranking-main .podium-info h3{
-
-        margin:4px 0 !important;
-
-        font-size:12px !important;
-
-    }
-
-
-    .ranking-main .podium-score{
-
-        margin:0 !important;
-
-        font-size:14px !important;
-
-    }
 
 }
