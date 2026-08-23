@@ -1256,95 +1256,38 @@ footer{
 
 }
 /* =========================================
-   FLIGHT28 MOBILE COMPACT TIKTOK TUNE
+   FLIGHT28 MOBILE PODIUM POSITION FIX
 ========================================= */
 
 @media(max-width:760px){
 
-    .ranking-main .podium{
-        margin-top:20px !important;
-        margin-bottom:25px !important;
-        gap:6px !important;
-    }
-
-
     .ranking-main .podium-card{
-
-        min-height:160px !important;
-
-        padding:8px 5px 14px !important;
-
+        padding-bottom:8px !important;
     }
 
 
-    .ranking-main .podium-card.first{
-
-        min-height:195px !important;
-
-        transform:translateY(-12px) !important;
-
+    .ranking-main .podium-avatar-wrap{
+        transform:translateY(18px) !important;
     }
 
 
-    /* Move the giant numbers slightly down */
+    .ranking-main .podium-info{
+        transform:translateY(18px) !important;
+    }
+
+
+    .ranking-main .podium-score{
+        transform:translateY(18px) !important;
+    }
+
+
     .podium-rank-number{
-
-        top:20px !important;
-
-        right:-8px !important;
-
-        font-size:95px !important;
-
+        top:25px !important;
     }
 
 
     .rank-1 .podium-rank-number{
-
-        font-size:120px !important;
-
-        top:10px !important;
-
-    }
-
-
-    /* Lower avatars */
-    .ranking-main .podium-avatar-wrap{
-
-        width:64px !important;
-
-        height:64px !important;
-
-        margin-bottom:6px !important;
-
-    }
-
-
-    .ranking-main .first .podium-avatar-wrap{
-
-        width:78px !important;
-
-        height:78px !important;
-
-    }
-
-
-    /* Tighter names */
-    .ranking-main .podium-info h3{
-
-        font-size:12px !important;
-
-        margin:2px 0 4px !important;
-
-    }
-
-
-    /* Tighter diamonds */
-    .ranking-main .podium-score{
-
-        font-size:14px !important;
-
-        margin-top:2px !important;
-
+        top:15px !important;
     }
 
 }
