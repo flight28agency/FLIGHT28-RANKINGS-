@@ -991,3 +991,128 @@ footer{
   }
 
 }
+/* =========================================
+   FLIGHT28 MOBILE MATCH FIX
+========================================= */
+
+@media (max-width:760px){
+
+  .top-actions{
+    display:none;
+  }
+
+  .page-shell,
+  .ranking-main{
+    width:calc(100% - 24px);
+    margin:0 auto;
+  }
+
+  .ranking-main{
+    padding-top:28px;
+  }
+
+  .ranking-tabs{
+    width:100%;
+    gap:8px;
+    margin-bottom:30px;
+  }
+
+  .ranking-tabs .tab{
+    min-width:0;
+    flex:1;
+    padding:13px 8px;
+    font-size:14px;
+  }
+
+  .ranking-reset{
+    margin-bottom:50px;
+    font-size:15px;
+  }
+
+  .ranking-reset #countdown{
+    font-size:18px;
+  }
+
+
+  /* KEEP DESKTOP PODIUM STYLE ON MOBILE */
+
+  .ranking-main .podium{
+    display:grid;
+    grid-template-columns:1fr 1.12fr 1fr;
+    gap:6px;
+    width:100%;
+    margin-bottom:40px;
+  }
+
+
+  .ranking-main .podium-card{
+    min-height:230px;
+    padding:22px 6px;
+  }
+
+
+  .ranking-main .podium-card.first{
+    min-height:260px;
+    transform:translateY(-18px);
+  }
+
+
+  .ranking-main .podium-avatar-wrap{
+    width:64px;
+    height:64px;
+  }
+
+
+  .ranking-main .first .podium-avatar-wrap{
+    width:82px;
+    height:82px;
+  }
+
+
+  .ranking-main .podium-info h3{
+    font-size:12px;
+  }
+
+
+  .ranking-main .podium-score{
+    font-size:14px;
+  }
+
+
+  /* BIG RANK NUMBERS */
+
+  .podium-rank-number{
+    font-size:120px;
+    top:-10px;
+  }
+
+
+  .rank-1 .podium-rank-number{
+    font-size:150px;
+  }
+
+
+  /* LEADERBOARD */
+
+  .ranking-main .leader-row{
+    min-height:78px;
+    padding:10px 6px;
+  }
+
+
+  .ranking-main .avatar{
+    width:52px;
+    height:52px;
+  }
+
+
+  .ranking-main .creator-meta strong{
+    font-size:15px;
+  }
+
+
+  .ranking-main .diamond-value{
+    font-size:15px;
+  }
+
+}
