@@ -129,7 +129,6 @@ if (diamonds > 0) {
     repeatCount: 1,
     giftName
   });
-  });
 }
 
 } catch (err) {
