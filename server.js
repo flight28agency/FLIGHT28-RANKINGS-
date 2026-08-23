@@ -124,16 +124,17 @@ const diamonds = diamondCount;
 console.log(
   `GIFT @${username}: ${giftName} | ${diamondCount} x ${repeatCount} = ${diamonds}`
 );
-
 if (diamonds > 0) {
   saveGift(username, {
     diamondCount,
     repeatCount: 1,
     giftName
-});
- catch (err) {
-   console.log(`Could not parse event for @${username}:`, err.message);
- }
+  });
+}
+
+} catch (err) {
+  console.log(`Could not parse event for @${username}:`, err.message);
+}
   ws.on("close", (code, reason) => {
     console.log(`WebSocket closed for @${username}:`, code, reason.toString());
     liveCreators.delete(username);
