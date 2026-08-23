@@ -136,7 +136,7 @@ if (diamonds > 0) {
   });
 }
 creators.forEach(connectCreator);
-
+}
 app.get("/api/leaderboard", async (req, res) => {
   const { data, error } = await supabase
     .from("gift_events")
