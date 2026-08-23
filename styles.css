@@ -1256,38 +1256,40 @@ footer{
 
 }
 /* =========================================
-   FLIGHT28 MOBILE PODIUM POSITION FIX
+   FLIGHT28 MOBILE FINAL COMPACT TUNE
 ========================================= */
 
 @media(max-width:760px){
 
     .ranking-main .podium-card{
+        min-height:170px !important;
         padding-bottom:8px !important;
     }
 
 
+    .ranking-main .podium-card.first{
+        min-height:205px !important;
+    }
+
+
     .ranking-main .podium-avatar-wrap{
-        transform:translateY(18px) !important;
+        transform:none !important;
+        margin-bottom:5px !important;
     }
 
 
     .ranking-main .podium-info{
-        transform:translateY(18px) !important;
+        transform:none !important;
+    }
+
+
+    .ranking-main .podium-info h3{
+        margin:2px 0 4px !important;
     }
 
 
     .ranking-main .podium-score{
-        transform:translateY(18px) !important;
-    }
-
-
-    .podium-rank-number{
-        top:25px !important;
-    }
-
-
-    .rank-1 .podium-rank-number{
-        top:15px !important;
+        margin-top:0 !important;
     }
 
 }
