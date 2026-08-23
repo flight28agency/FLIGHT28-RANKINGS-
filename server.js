@@ -55,7 +55,6 @@ async function saveGift(username, gift) {
   console.log(`${username} +${diamonds} diamonds`);
 }
 
-const processedGiftEvents = new Map();
 function connectCreator(username) {
   const wsUrl =
     `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}`;
