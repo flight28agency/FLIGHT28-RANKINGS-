@@ -1293,3 +1293,125 @@ footer{
     }
 
 }
+/* =========================================
+   FLIGHT28 PODIUM CENTER + SQUARE FIX
+========================================= */
+
+@media(max-width:760px){
+
+    .ranking-main .podium{
+        gap:8px !important;
+        margin-top:45px !important;
+    }
+
+
+    .ranking-main .podium-card{
+
+        height:175px !important;
+        min-height:175px !important;
+
+        aspect-ratio:1 / 1;
+
+        padding:0 !important;
+
+        justify-content:center !important;
+
+    }
+
+
+    .ranking-main .podium-card.first{
+
+        height:205px !important;
+        min-height:205px !important;
+
+        transform:translateY(-15px) !important;
+
+    }
+
+
+    /* LARGE NUMBERS FULL CARD */
+
+    .podium-rank-number{
+
+        position:absolute !important;
+
+        top:50% !important;
+        right:50% !important;
+
+        transform:translate(50%,-50%) !important;
+
+        font-size:170px !important;
+
+        line-height:.8 !important;
+
+        opacity:.35 !important;
+
+        z-index:0 !important;
+
+    }
+
+
+    .rank-1 .podium-rank-number{
+
+        font-size:210px !important;
+
+        color:#ff2b2f !important;
+
+    }
+
+
+    /* CENTER PROFILE */
+
+    .ranking-main .podium-avatar-wrap{
+
+        position:relative;
+
+        width:70px !important;
+        height:70px !important;
+
+        margin:0 auto 8px !important;
+
+        z-index:2 !important;
+
+    }
+
+
+    .ranking-main .first .podium-avatar-wrap{
+
+        width:88px !important;
+        height:88px !important;
+
+    }
+
+
+    /* TEXT */
+
+    .ranking-main .podium-info{
+
+        position:relative;
+
+        z-index:3;
+
+        text-align:center;
+
+    }
+
+
+    .ranking-main .podium-info h3{
+
+        margin:4px 0 !important;
+
+        font-size:12px !important;
+
+    }
+
+
+    .ranking-main .podium-score{
+
+        margin:0 !important;
+
+        font-size:14px !important;
+
+    }
+
+}
