@@ -164,7 +164,7 @@ app.get("/api/leaderboard", async (req, res) => {
 username,
 diamonds,
 live: liveCreators.has(username)
-    }));
+ }))
     .sort((a, b) => b.diamonds - a.diamonds);
 
   res.json(leaderboard);
