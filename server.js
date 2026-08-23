@@ -80,7 +80,7 @@ ws.on("message", data => {
   msg.messageType ||
   "UNKNOWN";
 
-if (eventType === "WebcastGiftMessage") {
+if (eventType.toLowerCase().includes("gift")) {
   const gift = msg.data || msg;
   
   const eventId =
