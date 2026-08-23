@@ -90,7 +90,7 @@ if (eventType.toLowerCase().includes("gift")) {
   msg.msgId ||
   msg.messageId;
   if (eventId) {
- const key = `${username}:${giftName}:${diamondCount}:${repeatCount}`;
+ const key = `${username}:${eventId}`;
 
   if (processedGiftEvents.has(key)) {
     return;
