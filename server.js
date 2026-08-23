@@ -131,7 +131,6 @@ if (diamonds > 0) {
   });
 }
 
-}
   ws.on("error", err => {
     console.log(`WebSocket error for @${username}:`, err.message);
   });
