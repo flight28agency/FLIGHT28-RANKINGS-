@@ -130,10 +130,10 @@ if (diamonds > 0) {
     diamondCount,
     repeatCount: 1,
     giftName
-133 });
-134 catch (err) {
-135   console.log(`Could not parse event for @${username}:`, err.message);
-136 }
+});
+ catch (err) {
+   console.log(`Could not parse event for @${username}:`, err.message);
+ }
   ws.on("close", (code, reason) => {
     console.log(`WebSocket closed for @${username}:`, code, reason.toString());
     liveCreators.delete(username);
