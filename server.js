@@ -131,8 +131,6 @@ if (diamonds > 0) {
   });
 }
 
-} catch (err) {
-  console.log(`Could not parse event for @${username}:`, err.message);
 }
   ws.on("error", err => {
     console.log(`WebSocket error for @${username}:`, err.message);
