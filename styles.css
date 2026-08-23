@@ -1110,3 +1110,64 @@ footer{
 }
 
 }
+/* =========================================
+   FLIGHT28 TIKTOK MOBILE PODIUM TEST
+========================================= */
+
+@media(max-width:760px){
+
+  .ranking-main .podium-card{
+    min-height:170px !important;
+    padding:10px 5px !important;
+    border-radius:8px !important;
+    justify-content:flex-end !important;
+    overflow:hidden !important;
+  }
+
+
+  .ranking-main .podium-card.first{
+    min-height:200px !important;
+    transform:translateY(-15px) !important;
+  }
+
+
+  /* move big numbers behind */
+  .podium-rank-number{
+    top:-5px !important;
+    right:-5px !important;
+    font-size:95px !important;
+    opacity:.35 !important;
+  }
+
+
+  .rank-1 .podium-rank-number{
+    font-size:120px !important;
+  }
+
+
+  /* smaller cards, bigger focus on profile */
+  .ranking-main .podium-avatar-wrap{
+    width:70px !important;
+    height:70px !important;
+    margin-bottom:8px !important;
+  }
+
+
+  .ranking-main .first .podium-avatar-wrap{
+    width:82px !important;
+    height:82px !important;
+  }
+
+
+  .ranking-main .podium-info h3{
+    font-size:12px !important;
+    margin-top:5px !important;
+  }
+
+
+  .ranking-main .podium-score{
+    font-size:14px !important;
+    margin-top:8px !important;
+  }
+
+}
