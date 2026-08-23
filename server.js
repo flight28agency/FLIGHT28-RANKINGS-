@@ -104,17 +104,17 @@ if (eventType.toLowerCase().includes("gift")) {
   gift.repeatCount || 1
 );
 
-106 const key = `${username}:${giftName}:${diamondCount}:${repeatCount}`;
+const key = `${username}:${giftName}:${diamondCount}:${repeatCount}`;
 
-107 if (processedGiftEvents.has(key)) {
-108   return;
-109 }
+if (processedGiftEvents.has(key)) {
+   return;
+ }
 
-110 processedGiftEvents.set(key, Date.now());
+processedGiftEvents.set(key, Date.now());
 
-111 setTimeout(() => {
-112   processedGiftEvents.delete(key);
-113 }, 60000);
+setTimeout(() => {
+processedGiftEvents.delete(key);
+ }, 60000);
 
 // TikTok combo gifts send cumulative repeat counts.
 // TikTok combo gifts send cumulative repeat counts.
