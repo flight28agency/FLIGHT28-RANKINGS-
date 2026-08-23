@@ -33,6 +33,7 @@ const processedGiftEvents = new Map();
 
 app.use(express.static(__dirname));
 
+
 app.get("/health", (req, res) => {
   res.json({
     status: "Flight28 tracker online"
@@ -42,9 +43,7 @@ app.get("/health", (req, res) => {
 
 async function saveGift(username, gift) {
 
-  const diamonds =
-    Number(gift.diamondCount || 0) *
-    Number(gift.repeatCount || 1);
+  const diamonds = Number(gift.diamondCount || 0);
 
   if (diamonds <= 0) return;
 
@@ -53,13 +52,13 @@ async function saveGift(username, gift) {
     .from("gift_events")
     .insert({
       creator_username: username,
-      diamonds,
+      diamonds: diamonds,
       gift_name: gift.giftName || "TikTok Gift"
     });
 
 
   if (error) {
-    console.error(
+    console.log(
       "Supabase error:",
       error.message
     );
@@ -95,25 +94,27 @@ function connectCreator(username) {
 
 
 
-  ws.on("message", data => {
+  ws.on("message", (data) => {
 
     try {
 
-      const raw = data.toString();
-
-      console.log(
-        "MESSAGE RECEIVED:",
-        raw.substring(0, 300)
+      const payload = JSON.parse(
+        data.toString()
       );
 
 
-      const payload = JSON.parse(raw);
+      console.log(
+        "EVENT TYPES:",
+        payload.messages?.map(
+          m => m.type
+        )
+      );
 
 
       if (!payload.messages) return;
 
 
-      payload.messages.forEach(msg => {
+      payload.messages.forEach((msg) => {
 
 
         const eventType =
@@ -165,9 +166,7 @@ function connectCreator(username) {
 
 
           setTimeout(() => {
-
             processedGiftEvents.delete(key);
-
           }, 60000);
 
 
@@ -177,16 +176,10 @@ function connectCreator(username) {
           );
 
 
-
-          if (diamondCount > 0) {
-
-            saveGift(username, {
-              diamondCount,
-              repeatCount: 1,
-              giftName
-            });
-
-          }
+          saveGift(username, {
+            diamondCount,
+            giftName
+          });
 
         }
 
@@ -196,7 +189,7 @@ function connectCreator(username) {
     } catch (err) {
 
       console.log(
-        "Message parse error:",
+        "Parse error:",
         err.message
       );
 
@@ -206,15 +199,14 @@ function connectCreator(username) {
 
 
 
-  ws.on("error", err => {
+  ws.on("error", (err) => {
 
     console.log(
-      `WebSocket error for @${username}:`,
+      `WebSocket error @${username}:`,
       err.message
     );
 
   });
-
 
 }
 
@@ -226,7 +218,6 @@ creators.forEach(connectCreator);
 
 app.get("/api/leaderboard", async (req, res) => {
 
-
   const { data, error } =
     await supabase
       .from("gift_events")
@@ -237,12 +228,6 @@ app.get("/api/leaderboard", async (req, res) => {
 
   if (error) {
 
-    console.error(
-      "Leaderboard error:",
-      error.message
-    );
-
-
     return res
       .status(500)
       .json({
@@ -252,9 +237,7 @@ app.get("/api/leaderboard", async (req, res) => {
   }
 
 
-
   const totals = {};
-
 
 
   for (const gift of data || []) {
@@ -264,9 +247,7 @@ app.get("/api/leaderboard", async (req, res) => {
 
 
     if (!totals[username]) {
-
       totals[username] = 0;
-
     }
 
 
@@ -276,18 +257,12 @@ app.get("/api/leaderboard", async (req, res) => {
   }
 
 
-
   const leaderboard =
     Object.entries(totals)
       .map(([username, diamonds]) => ({
-
         username,
-
         diamonds,
-
-        live:
-          liveCreators.has(username)
-
+        live: liveCreators.has(username)
       }))
       .sort(
         (a, b) =>
@@ -295,9 +270,7 @@ app.get("/api/leaderboard", async (req, res) => {
       );
 
 
-
   res.json(leaderboard);
-
 
 });
 
@@ -308,7 +281,5 @@ app.listen(PORT, () => {
   console.log(
     `Flight28 tracker running on port ${PORT}`
   );
-
-});
 
 });
