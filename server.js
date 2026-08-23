@@ -135,7 +135,7 @@ if (diamonds > 0) {
     console.log(`WebSocket error for @${username}:`, err.message);
   });
   
-});
+}
 creators.forEach(connectCreator);
 
 app.get("/api/leaderboard", async (req, res) => {
