@@ -133,10 +133,7 @@ function connectCreator(username) {
           "";
 
 
-        console.log(
-          `@${username} EVENT:`,
-          type
-        );
+
 
 
         if (
