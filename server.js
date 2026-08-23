@@ -120,20 +120,24 @@ setTimeout(() => {
 // TikTok combo gifts send cumulative repeat counts.
 // Count each event as ONE gift so we don't double-count the combo.
 const diamonds = diamondCount;
-  console.log(
-    `GIFT @${username}: ${giftName} | ${diamondCount} x ${repeatCount} = ${diamonds}`
-  );
 
-  if (diamonds > 0) {
-    saveGift(username, {
-      diamondCount,
-      repeatCount: 1,
-      giftName
-    });
-  }
-  } catch (err) {
-    console.log(`Could not parse event for @${username}:`, err.message);
-  }
+console.log(
+  `GIFT @${username}: ${giftName} | ${diamondCount} x ${repeatCount} = ${diamonds}`
+);
+
+if (diamonds > 0) {
+  saveGift(username, {
+    diamondCount,
+    repeatCount: 1,
+    giftName
+  });
+}
+});
+} catch (err) {
+  console.log(`Could not parse event for @${username}:`, err.message);
+}
+  console.log(`Could not parse event for @${username}:`, err.message);
+}
 
   ws.on("close", (code, reason) => {
     console.log(`WebSocket closed for @${username}:`, code, reason.toString());
