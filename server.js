@@ -14,14 +14,17 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Origin",
     "https://flight28agency.github.io"
   );
+
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS"
   );
+
   res.header(
     "Access-Control-Allow-Headers",
     "Content-Type"
   );
+
   next();
 });
 
@@ -41,8 +44,12 @@ const creators = [
 
 
 const liveCreators = new Set();
-const processedEvents = new Set();
 
+const processedEvents = new Map();
+
+const creatorConnections = new Map();
+
+const reconnectTimers = new Map();
 
 
 app.get("/health", (req, res) => {
@@ -52,26 +59,31 @@ app.get("/health", (req, res) => {
 });
 
 
-
 async function saveGift(username, giftName, diamonds) {
 
-  if (!diamonds || diamonds <= 0) return;
+  diamonds = Number(diamonds || 0);
+
+  if (diamonds <= 0) {
+    return;
+  }
 
 
   const { error } = await supabase
     .from("gift_events")
     .insert({
       creator_username: username,
-      diamonds,
-      gift_name: giftName
+      diamonds: diamonds,
+      gift_name: giftName || "TikTok Gift"
     });
 
 
   if (error) {
+
     console.log(
-      "Supabase error:",
+      `Supabase error for @${username}:`,
       error.message
     );
+
     return;
   }
 
@@ -82,10 +94,50 @@ async function saveGift(username, giftName, diamonds) {
 }
 
 
+function scheduleReconnect(username, delay = 30000) {
 
+  if (reconnectTimers.has(username)) {
+    return;
+  }
+
+
+  console.log(
+    `Retrying @${username} in ${delay / 1000} seconds`
+  );
+
+
+  const timer = setTimeout(() => {
+
+    reconnectTimers.delete(username);
+
+    connectCreator(username);
+
+  }, delay);
+
+
+  reconnectTimers.set(
+    username,
+    timer
+  );
+}
 
 
 function connectCreator(username) {
+
+  const oldConnection =
+    creatorConnections.get(username);
+
+
+  if (
+    oldConnection &&
+    (
+      oldConnection.readyState === WebSocket.OPEN ||
+      oldConnection.readyState === WebSocket.CONNECTING
+    )
+  ) {
+    return;
+  }
+
 
   const wsUrl =
     "wss://ws.eulerstream.com" +
@@ -100,6 +152,11 @@ function connectCreator(username) {
   const ws = new WebSocket(wsUrl);
 
 
+  creatorConnections.set(
+    username,
+    ws
+  );
+
 
   ws.on("open", () => {
 
@@ -110,107 +167,166 @@ function connectCreator(username) {
   });
 
 
-
   ws.on("message", (data) => {
 
     try {
 
       const payload =
-        JSON.parse(data.toString());
+        JSON.parse(
+          data.toString()
+        );
 
 
-      if (!payload.messages) {
+      if (!Array.isArray(payload.messages)) {
         return;
       }
 
 
-      payload.messages.forEach((event) => {
-
+      for (const event of payload.messages) {
 
         const type =
-          event.type ||
-          event.event ||
-          "";
+          String(
+            event.type ||
+            event.event ||
+            ""
+          );
 
 
-
+        const lowerType =
+          type.toLowerCase();
 
 
         if (
-          type
-            .toLowerCase()
-            .includes("live")
+          lowerType.includes("liveintro") ||
+          lowerType.includes("roommessage") ||
+          lowerType.includes("roomuserseq") ||
+          lowerType.includes("member") ||
+          lowerType.includes("chat") ||
+          lowerType.includes("gift")
         ) {
+
           liveCreators.add(username);
+
         }
 
 
-
-        if (
-          !type
-            .toLowerCase()
-            .includes("gift")
-        ) {
-          return;
+        if (!lowerType.includes("gift")) {
+          continue;
         }
-
 
 
         const gift =
           event.data || event;
 
 
+        const giftDetails =
+          gift.giftDetails ||
+          gift.gift ||
+          {};
+
 
         const giftName =
           gift.giftName ||
-          gift.giftDetails?.giftName ||
+          giftDetails.giftName ||
+          giftDetails.name ||
           "TikTok Gift";
 
 
-
-        const diamonds =
+        const diamondCount =
           Number(
             gift.diamondCount ||
-            gift.giftDetails?.diamondCount ||
+            giftDetails.diamondCount ||
+            giftDetails.diamond_count ||
             0
           );
 
 
-
-        const id =
-          `${username}-${giftName}-${diamonds}`;
-
-
-
-        if (processedEvents.has(id)) {
-          return;
+        if (diamondCount <= 0) {
+          continue;
         }
 
 
-        processedEvents.add(id);
+        const messageId =
+          gift.msgId ||
+          gift.messageId ||
+          gift.common?.msgId ||
+          event.msgId ||
+          event.messageId ||
+          null;
 
+
+        const repeatCount =
+          Number(
+            gift.repeatCount ||
+            gift.repeat_count ||
+            1
+          );
+
+
+        const repeatEnd =
+          gift.repeatEnd ??
+          gift.repeat_end ??
+          gift.isFinal ??
+          gift.is_final ??
+          true;
+
+
+        if (
+          repeatCount > 1 &&
+          repeatEnd === false
+        ) {
+          continue;
+        }
+
+
+        const eventKey =
+          messageId
+            ? `${username}:${messageId}`
+            : `${username}:${giftName}:${diamondCount}:${repeatCount}`;
+
+
+        if (processedEvents.has(eventKey)) {
+          continue;
+        }
+
+
+        processedEvents.set(
+          eventKey,
+          Date.now()
+        );
+
+
+        setTimeout(() => {
+
+          processedEvents.delete(
+            eventKey
+          );
+
+        }, 120000);
+
+
+        const totalDiamonds =
+          diamondCount * repeatCount;
 
 
         console.log(
-          `GIFT @${username}: ${giftName} ${diamonds}`
+          `GIFT @${username}: ${giftName} ${totalDiamonds}`
         );
-
 
 
         saveGift(
           username,
           giftName,
-          diamonds
+          totalDiamonds
         );
 
-
-      });
+      }
 
 
     } catch (err) {
 
       console.log(
-        "Parse error:",
+        `Message error @${username}:`,
         err.message
       );
 
@@ -219,17 +335,104 @@ function connectCreator(username) {
   });
 
 
-
   ws.on("close", (code) => {
 
-    console.log(
-      `Disconnected @${username} code ${code}`
+    creatorConnections.delete(
+      username
     );
 
-    liveCreators.delete(username);
+
+    liveCreators.delete(
+      username
+    );
+
+
+    if (code === 4404) {
+
+      console.log(
+        `@${username} not detected LIVE yet. Retrying automatically.`
+      );
+
+      scheduleReconnect(
+        username,
+        30000
+      );
+
+      return;
+    }
+
+
+    if (code === 4005) {
+
+      console.log(
+        `@${username} LIVE ended. Retrying automatically.`
+      );
+
+      scheduleReconnect(
+        username,
+        30000
+      );
+
+      return;
+    }
+
+
+    if (code === 4006) {
+
+      console.log(
+        `@${username} connection inactive. Reconnecting.`
+      );
+
+      scheduleReconnect(
+        username,
+        10000
+      );
+
+      return;
+    }
+
+
+    if (code === 4429) {
+
+      console.log(
+        `@${username} connection limit reached. Retrying in 60 seconds.`
+      );
+
+      scheduleReconnect(
+        username,
+        60000
+      );
+
+      return;
+    }
+
+
+    if (code === 4500) {
+
+      console.log(
+        `TikTok closed @${username} connection. Retrying.`
+      );
+
+      scheduleReconnect(
+        username,
+        15000
+      );
+
+      return;
+    }
+
+
+    console.log(
+      `Disconnected @${username} code ${code}. Retrying.`
+    );
+
+
+    scheduleReconnect(
+      username,
+      30000
+    );
 
   });
-
 
 
   ws.on("error", (err) => {
@@ -244,86 +447,101 @@ function connectCreator(username) {
 }
 
 
+for (const username of creators) {
+
+  connectCreator(username);
+
+}
 
 
-creators.forEach(connectCreator);
+app.get(
+  "/api/leaderboard",
+  async (req, res) => {
+
+    const { data, error } =
+      await supabase
+        .from("gift_events")
+        .select(
+          "creator_username, diamonds, created_at"
+        );
 
 
+    if (error) {
 
-
-
-
-app.get("/api/leaderboard", async (req, res) => {
-
-
-  const { data, error } =
-    await supabase
-      .from("gift_events")
-      .select(
-        "creator_username, diamonds, created_at"
+      console.log(
+        "Leaderboard error:",
+        error.message
       );
 
 
+      return res
+        .status(500)
+        .json({
+          error: error.message
+        });
 
-  if (error) {
-
-    return res
-      .status(500)
-      .json({
-        error: error.message
-      });
-
-  }
-
-
-
-  const totals = {};
-
-
-
-  for (const row of data || []) {
-
-    if (!totals[row.creator_username]) {
-      totals[row.creator_username] = 0;
     }
 
 
-    totals[row.creator_username] +=
-      Number(row.diamonds || 0);
+    const totals = {};
+
+
+    for (const row of data || []) {
+
+      const username =
+        row.creator_username;
+
+
+      if (!totals[username]) {
+
+        totals[username] = 0;
+
+      }
+
+
+      totals[username] +=
+        Number(
+          row.diamonds || 0
+        );
+
+    }
+
+
+    const leaderboard =
+      creators
+        .map((username) => ({
+
+          username,
+
+          diamonds:
+            totals[username] || 0,
+
+          live:
+            liveCreators.has(username)
+
+        }))
+        .sort(
+          (a, b) =>
+            b.diamonds -
+            a.diamonds
+        );
+
+
+    res.json(
+      leaderboard
+    );
 
   }
+);
 
 
+app.listen(
+  PORT,
+  () => {
 
+    console.log(
+      `Flight28 tracker running on port ${PORT}`
+    );
 
-  const leaderboard =
-    Object.entries(totals)
-      .map(([username, diamonds]) => ({
-        username,
-        diamonds,
-        live: liveCreators.has(username)
-      }))
-      .sort(
-        (a, b) =>
-          b.diamonds - a.diamonds
-      );
-
-
-
-  res.json(leaderboard);
-
-
-});
-
-
-
-
-
-
-app.listen(PORT, () => {
-
-  console.log(
-    `Flight28 tracker running on port ${PORT}`
-  );
-
-});
+  }
+);
