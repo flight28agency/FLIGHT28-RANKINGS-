@@ -103,9 +103,6 @@ if (eventType.toLowerCase().includes("gift")) {
  const repeatCount = Number(
   gift.repeatCount || 1
 );
-103 const repeatCount = Number(
-104   gift.repeatCount || 1
-105 );
 
 106 const key = `${username}:${giftName}:${diamondCount}:${repeatCount}`;
 
