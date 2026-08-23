@@ -113,8 +113,8 @@ if (processedGiftEvents.has(key)) {
 processedGiftEvents.set(key, Date.now());
 
 setTimeout(() => {
-processedGiftEvents.delete(key);
- }, 60000);
+  processedGiftEvents.delete(key);
+}, 60000);
 
 // TikTok combo gifts send cumulative repeat counts.
 // TikTok combo gifts send cumulative repeat counts.
@@ -131,9 +131,7 @@ const diamonds = diamondCount;
       giftName
     });
   }
-}
-      });
-    }
+});
   } catch (err) {
     console.log(`Could not parse event for @${username}:`, err.message);
   }
