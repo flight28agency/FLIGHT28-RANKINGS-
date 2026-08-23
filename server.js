@@ -79,7 +79,7 @@ function connectCreator(username) {
 
 
   ws.on("message", data => {
-  console.log("MESSAGE RECEIVED:", data.toString().slice(0,500));
+  console.log("MESSAGE RECEIVED:", data.toString());
 
     try {
 
