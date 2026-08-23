@@ -90,7 +90,6 @@ if (eventType.toLowerCase().includes("gift")) {
   msg.msgId ||
   msg.messageId;
 
-}
 
   const giftName =
     gift.giftDetails?.giftName ||
@@ -130,15 +129,12 @@ if (diamonds > 0) {
     repeatCount: 1,
     giftName
   });
+  });
 }
 
 } catch (err) {
   console.log(`Could not parse event for @${username}:`, err.message);
 }
-  ws.on("close", (code, reason) => {
-    console.log(`WebSocket closed for @${username}:`, code, reason.toString());
-    liveCreators.delete(username);
-  });
 
   ws.on("error", err => {
     console.log(`WebSocket error for @${username}:`, err.message);
