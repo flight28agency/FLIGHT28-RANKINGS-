@@ -66,8 +66,8 @@ async function saveGift(username, gift) {
 
 function connectCreator(username) {
 
- const wsUrl =
-wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}&enableRaw=true
+const wsUrl = `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}&enableRaw=true`;
+const ws = new WebSocket(wsUrl);
   const ws = new WebSocket(wsUrl);
 
 
