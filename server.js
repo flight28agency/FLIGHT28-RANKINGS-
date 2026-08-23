@@ -84,7 +84,7 @@ function connectCreator(username) {
     try {
 
       const payload = JSON.parse(data.toString());
-      console.log(payload.messages?.[0]?.type);
+     console.log("EVENT TYPES:", payload.messages?.map(m => m.type));
 
       if (payload && payload.messages) {
 
