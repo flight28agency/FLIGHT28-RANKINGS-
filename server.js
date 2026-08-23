@@ -25,6 +25,7 @@ const creators = [
 ];
 
 const liveCreators = new Set();
+const processedGiftEvents = new Map();
 app.use(express.static(__dirname));
 
 app.get("/health", (req, res) => {
