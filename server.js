@@ -131,7 +131,6 @@ const diamonds = diamondCount;
       giftName
     });
   }
-});
   } catch (err) {
     console.log(`Could not parse event for @${username}:`, err.message);
   }
