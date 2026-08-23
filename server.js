@@ -82,6 +82,26 @@ ws.on("message", data => {
 
 if (eventType === "WebcastGiftMessage") {
   const gift = msg.data || msg;
+  
+  const eventId =
+  gift.msgId ||
+  gift.messageId ||
+  gift.common?.msgId ||
+  msg.msgId ||
+  msg.messageId;
+  if (eventId) {
+  const key = `${username}:${eventId}`;
+
+  if (processedGiftEvents.has(key)) {
+    return;
+  }
+
+  processedGiftEvents.set(key, Date.now());
+
+  setTimeout(() => {
+    processedGiftEvents.delete(key);
+  }, 60000);
+}
 
   const giftName =
     gift.giftDetails?.giftName ||
