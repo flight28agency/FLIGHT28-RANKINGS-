@@ -1111,193 +1111,184 @@ footer{
 
 }
 /* =========================================
-   FLIGHT28 MOBILE TIKTOK PODIUM FINAL
+FLIGHT28 MOBILE TIKTOK GOLD PODIUM FINAL
 ========================================= */
 
 @media(max-width:760px){
 
-    .ranking-main .podium{
+.ranking-main .podium{
+    display:grid;
+    grid-template-columns:1fr 1.12fr 1fr;
+    gap:8px;
+    align-items:end;
+    margin-top:35px;
+    margin-bottom:35px;
+}
 
-        display:grid;
-        grid-template-columns:1fr 1.12fr 1fr;
-        gap:8px;
-        align-items:end;
 
-        margin-top:40px;
-        margin-bottom:35px;
+/* PODIUM CARDS */
 
-    }
+.ranking-main .podium-card{
 
+    position:relative;
 
-    /* PODIUM CARDS */
+    height:185px !important;
+    min-height:185px !important;
 
-    .ranking-main .podium-card{
+    padding:0 !important;
 
-        position:relative;
+    border-radius:8px !important;
 
-        height:180px;
-        min-height:180px;
+    background:#242424 !important;
 
-        padding:0 !important;
+    overflow:hidden;
 
-        border-radius:6px;
+    display:flex;
 
-        background:#242424;
+    justify-content:center;
 
-        overflow:hidden;
+    align-items:center;
 
-        display:flex;
+}
 
-        justify-content:center;
 
-        align-items:center;
+.ranking-main .podium-card.first{
 
-    }
+    height:220px !important;
+    min-height:220px !important;
 
+    transform:translateY(-18px) !important;
 
-    .ranking-main .podium-card.first{
+}
 
-        height:215px;
-        min-height:215px;
 
-        transform:translateY(-15px);
+/* BIG RANK NUMBERS */
 
-    }
+.podium-rank-number{
 
+    position:absolute;
 
+    top:-15px;
 
-    /* BIG BACKGROUND NUMBERS */
+    right:-10px;
 
-    .podium-rank-number{
+    transform:none;
 
-        position:absolute;
+    font-size:125px !important;
 
-        top:50%;
-        right:50%;
+    line-height:1;
 
-        transform:translate(50%,-50%);
+    font-weight:900;
 
-        font-size:150px;
+    opacity:.38;
 
-        line-height:.8;
+    z-index:1;
 
-        font-weight:900;
+}
 
-        opacity:.65;
 
-        z-index:1;
+.rank-1 .podium-rank-number{
 
-    }
+    color:#e6c76a !important;
 
+    font-size:155px !important;
 
-    /* GOLD */
+}
 
-    .rank-1 .podium-rank-number{
 
-        color:#e6c76a;
+.rank-2 .podium-rank-number{
 
-        font-size:180px;
+    color:#d7dce3 !important;
 
-    }
+}
 
 
-    /* SILVER */
+.rank-3 .podium-rank-number{
 
-    .rank-2 .podium-rank-number{
+    color:#c98d68 !important;
 
-        color:#d7dce3;
+}
 
-    }
 
+/* PROFILE PICTURE */
 
-    /* BRONZE */
+.ranking-main .podium-avatar-wrap{
 
-    .rank-3 .podium-rank-number{
+    position:absolute;
 
-        color:#c98d68;
+    top:50%;
 
-    }
+    left:50%;
 
+    transform:translate(-50%,-50%);
 
+    width:70px !important;
 
-    /* PROFILE CENTER */
+    height:70px !important;
 
-    .ranking-main .podium-avatar-wrap{
+    z-index:3;
 
-        position:absolute;
+}
 
-        top:50%;
-        left:50%;
 
-        transform:translate(-50%,-55%);
+.ranking-main .first .podium-avatar-wrap{
 
-        width:78px;
-        height:78px;
+    width:88px !important;
 
-        z-index:3;
+    height:88px !important;
 
-    }
+}
 
 
-    .ranking-main .first .podium-avatar-wrap{
+/* ONLY LIVE GETS RED */
 
-        width:92px;
-        height:92px;
+.ranking-main .podium-avatar{
 
-    }
+    border:4px solid #111 !important;
 
+    box-shadow:none !important;
 
+}
 
-    /* REMOVE #1 RED BORDER */
 
-    .ranking-main .first .podium-avatar{
+/* TEXT */
 
-        border-color:#111 !important;
+.ranking-main .podium-info{
 
-        box-shadow:none !important;
+    position:absolute;
 
-    }
+    bottom:14px;
 
+    width:100%;
 
+    text-align:center;
 
-    /* TEXT */
+    z-index:4;
 
-    .ranking-main .podium-info{
+}
 
-        position:absolute;
 
-        bottom:15px;
+.ranking-main .podium-info h3{
 
-        width:100%;
+    font-size:12px !important;
 
-        text-align:center;
+    margin:0 0 5px !important;
 
-        z-index:4;
+    white-space:nowrap;
 
-    }
+    overflow:hidden;
 
+    text-overflow:ellipsis;
 
-    .ranking-main .podium-info h3{
+}
 
-        font-size:12px;
 
-        margin:0 0 6px;
+.ranking-main .podium-score{
 
-        white-space:nowrap;
+    font-size:15px !important;
 
-        overflow:hidden;
+    margin:0 !important;
 
-        text-overflow:ellipsis;
-
-    }
-
-
-    .ranking-main .podium-score{
-
-        font-size:15px;
-
-        margin:0;
-
-    }
+}
 
 }
