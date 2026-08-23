@@ -1465,3 +1465,77 @@ footer{
     }
 
 }
+/* =========================================
+   TIKTOK STYLE PODIUM COLORS + SCALE
+========================================= */
+
+@media(max-width:760px){
+
+    .ranking-main .podium-card{
+        height:185px !important;
+        min-height:185px !important;
+    }
+
+    .ranking-main .podium-card.first{
+        height:215px !important;
+        min-height:215px !important;
+    }
+
+
+    /* BIGGER CENTERED NUMBERS */
+
+    .podium-rank-number{
+
+        top:50% !important;
+        right:50% !important;
+
+        transform:translate(50%,-52%) !important;
+
+        font-size:230px !important;
+
+        line-height:.8 !important;
+
+        opacity:.65 !important;
+
+    }
+
+
+    .rank-1 .podium-rank-number{
+
+        font-size:270px !important;
+
+        color:#e6c76a !important;
+
+    }
+
+
+    .rank-2 .podium-rank-number{
+
+        color:#d7dce3 !important;
+
+    }
+
+
+    .rank-3 .podium-rank-number{
+
+        color:#c98d68 !important;
+
+    }
+
+
+    /* KEEP PROFILE ABOVE NUMBER */
+
+    .ranking-main .podium-avatar-wrap{
+
+        z-index:5 !important;
+
+    }
+
+
+    .ranking-main .podium-info{
+
+        z-index:6 !important;
+
+    }
+
+}
