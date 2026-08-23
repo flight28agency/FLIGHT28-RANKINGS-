@@ -134,7 +134,6 @@ const diamonds = diamondCount;
   } catch (err) {
     console.log(`Could not parse event for @${username}:`, err.message);
   }
-});
 
   ws.on("close", (code, reason) => {
     console.log(`WebSocket closed for @${username}:`, code, reason.toString());
