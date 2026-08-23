@@ -1110,8 +1110,3 @@ footer{
 }
 
 }
-@media(max-width:760px){
-  .ranking-main .podium-card{
-    background:red !important;
-  }
-}
