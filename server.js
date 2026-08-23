@@ -29,10 +29,9 @@ const creators = [
 ];
 
 const liveCreators = new Set();
-const processedGiftEvents = new Map();
+const processedGiftEvents = new Set();
 
 app.use(express.static(__dirname));
-
 
 app.get("/health", (req, res) => {
   res.json({
@@ -41,30 +40,22 @@ app.get("/health", (req, res) => {
 });
 
 
-async function saveGift(username, gift) {
+async function saveGift(username, giftName, diamonds) {
 
-  const diamonds = Number(gift.diamondCount || 0);
-
-  if (diamonds <= 0) return;
-
+  if (!diamonds || diamonds <= 0) return;
 
   const { error } = await supabase
     .from("gift_events")
     .insert({
       creator_username: username,
-      diamonds: diamonds,
-      gift_name: gift.giftName || "TikTok Gift"
+      diamonds,
+      gift_name: giftName
     });
 
-
   if (error) {
-    console.log(
-      "Supabase error:",
-      error.message
-    );
+    console.log("Supabase error:", error.message);
     return;
   }
-
 
   console.log(
     `${username} +${diamonds} diamonds`
@@ -76,8 +67,12 @@ async function saveGift(username, gift) {
 function connectCreator(username) {
 
   const wsUrl =
-    `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}&enableRaw=true`;
-
+    `wss://ws.eulerstream.com?apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}` +
+    `&uniqueId=${encodeURIComponent(username)}` +
+    `&schemaVersion=v1` +
+    `&features.bundleEvents=true` +
+    `&features.rawMessages=true` +
+    `&features.normalizeUniqueId=true`;
 
   const ws = new WebSocket(wsUrl);
 
@@ -93,95 +88,81 @@ function connectCreator(username) {
   });
 
 
-
   ws.on("message", (data) => {
 
     try {
 
-      const payload = JSON.parse(
+      const message = JSON.parse(
         data.toString()
       );
 
 
       console.log(
-        "EVENT TYPES:",
-        payload.messages?.map(
-          m => m.type
-        )
+        "EVENT:",
+        message.messages?.map(m => m.type)
       );
 
 
-      if (!payload.messages) return;
+      if (!message.messages) return;
 
 
-      payload.messages.forEach((msg) => {
+      message.messages.forEach((event) => {
 
 
-        const eventType =
-          msg.event ||
-          msg.type ||
-          msg.eventType ||
-          msg.method ||
-          msg.messageType ||
+        const type =
+          event.type ||
+          event.event ||
           "";
 
 
         if (
-          eventType
-            .toLowerCase()
-            .includes("gift")
+          !type.toLowerCase().includes("gift")
         ) {
-
-
-          const gift =
-            msg.data || msg;
-
-
-          const giftName =
-            gift.giftDetails?.giftName ||
-            "TikTok Gift";
-
-
-          const diamondCount =
-            Number(
-              gift.giftDetails?.diamondCount || 0
-            );
-
-
-          const key =
-            `${username}:${giftName}:${diamondCount}`;
-
-
-          if (
-            processedGiftEvents.has(key)
-          ) {
-            return;
-          }
-
-
-          processedGiftEvents.set(
-            key,
-            Date.now()
-          );
-
-
-          setTimeout(() => {
-            processedGiftEvents.delete(key);
-          }, 60000);
-
-
-
-          console.log(
-            `GIFT @${username}: ${giftName} | ${diamondCount}`
-          );
-
-
-          saveGift(username, {
-            diamondCount,
-            giftName
-          });
-
+          return;
         }
+
+
+        const gift =
+          event.data || event;
+
+
+        const giftName =
+          gift.giftName ||
+          gift.giftDetails?.giftName ||
+          "TikTok Gift";
+
+
+        const diamonds =
+          Number(
+            gift.diamondCount ||
+            gift.giftDetails?.diamondCount ||
+            0
+          );
+
+
+        const id =
+          `${username}-${giftName}-${diamonds}-${Date.now()}`;
+
+
+        if (processedGiftEvents.has(id)) {
+          return;
+        }
+
+
+        processedGiftEvents.add(id);
+
+
+        console.log(
+          `GIFT @${username}: ${giftName} ${diamonds}`
+        );
+
+
+        saveGift(
+          username,
+          giftName,
+          diamonds
+        );
+
 
       });
 
@@ -198,12 +179,22 @@ function connectCreator(username) {
   });
 
 
-
   ws.on("error", (err) => {
 
     console.log(
       `WebSocket error @${username}:`,
       err.message
+    );
+
+  });
+
+
+  ws.on("close", () => {
+
+    liveCreators.delete(username);
+
+    console.log(
+      `Disconnected @${username}`
     );
 
   });
@@ -218,21 +209,18 @@ creators.forEach(connectCreator);
 
 app.get("/api/leaderboard", async (req, res) => {
 
-  const { data, error } =
-    await supabase
-      .from("gift_events")
-      .select(
-        "creator_username, diamonds, created_at"
-      );
+  const { data, error } = await supabase
+    .from("gift_events")
+    .select(
+      "creator_username, diamonds, created_at"
+    );
 
 
   if (error) {
 
-    return res
-      .status(500)
-      .json({
-        error: error.message
-      });
+    return res.status(500).json({
+      error: error.message
+    });
 
   }
 
@@ -242,16 +230,12 @@ app.get("/api/leaderboard", async (req, res) => {
 
   for (const gift of data || []) {
 
-    const username =
-      gift.creator_username;
-
-
-    if (!totals[username]) {
-      totals[username] = 0;
+    if (!totals[gift.creator_username]) {
+      totals[gift.creator_username] = 0;
     }
 
 
-    totals[username] +=
+    totals[gift.creator_username] +=
       Number(gift.diamonds || 0);
 
   }
@@ -265,7 +249,7 @@ app.get("/api/leaderboard", async (req, res) => {
         live: liveCreators.has(username)
       }))
       .sort(
-        (a, b) =>
+        (a,b) =>
           b.diamonds - a.diamonds
       );
 
