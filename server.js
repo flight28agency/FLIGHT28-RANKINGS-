@@ -34,15 +34,20 @@ const processedGiftEvents = new Map();
 app.use(express.static(__dirname));
 
 app.get("/health", (req, res) => {
-  res.json({ status: "Flight28 tracker online" });
+  res.json({
+    status: "Flight28 tracker online"
+  });
 });
 
+
 async function saveGift(username, gift) {
+
   const diamonds =
     Number(gift.diamondCount || 0) *
     Number(gift.repeatCount || 1);
 
   if (diamonds <= 0) return;
+
 
   const { error } = await supabase
     .from("gift_events")
@@ -52,109 +57,140 @@ async function saveGift(username, gift) {
       gift_name: gift.giftName || "TikTok Gift"
     });
 
+
   if (error) {
     console.error(
-      `Supabase error for ${username}:`,
+      "Supabase error:",
       error.message
     );
     return;
   }
 
-  console.log(`${username} +${diamonds} diamonds`);
+
+  console.log(
+    `${username} +${diamonds} diamonds`
+  );
 }
+
 
 
 function connectCreator(username) {
 
-const wsUrl = `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}&enableRaw=true`;
-const ws = new WebSocket(wsUrl);
+  const wsUrl =
+    `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}&enableRaw=true`;
+
+
   const ws = new WebSocket(wsUrl);
 
 
   ws.on("open", () => {
-    console.log(`WebSocket opened for @${username}`);
+
+    console.log(
+      `WebSocket opened for @${username}`
+    );
+
     liveCreators.add(username);
+
   });
 
 
+
   ws.on("message", data => {
-  console.log("MESSAGE RECEIVED:", data.toString());
 
     try {
 
-      const payload = JSON.parse(data.toString());
-     console.log("EVENT TYPES:", payload.messages?.map(m => m.type));
+      const raw = data.toString();
 
-      if (payload && payload.messages) {
-
-        payload.messages.forEach(msg => {
-
-          const eventType =
-            msg.event ||
-            msg.type ||
-            msg.eventType ||
-            msg.method ||
-            msg.messageType ||
-            "UNKNOWN";
+      console.log(
+        "MESSAGE RECEIVED:",
+        raw.substring(0, 300)
+      );
 
 
-          if (eventType.toLowerCase().includes("gift")) {
+      const payload = JSON.parse(raw);
 
 
-            const gift = msg.data || msg;
+      if (!payload.messages) return;
 
 
-            const giftName =
-              gift.giftDetails?.giftName ||
-              "TikTok Gift";
+      payload.messages.forEach(msg => {
 
 
-            const diamondCount = Number(
+        const eventType =
+          msg.event ||
+          msg.type ||
+          msg.eventType ||
+          msg.method ||
+          msg.messageType ||
+          "";
+
+
+        if (
+          eventType
+            .toLowerCase()
+            .includes("gift")
+        ) {
+
+
+          const gift =
+            msg.data || msg;
+
+
+          const giftName =
+            gift.giftDetails?.giftName ||
+            "TikTok Gift";
+
+
+          const diamondCount =
+            Number(
               gift.giftDetails?.diamondCount || 0
             );
 
 
-            const key =
-              `${username}:${giftName}:${diamondCount}`;
+          const key =
+            `${username}:${giftName}:${diamondCount}`;
 
 
-            if (processedGiftEvents.has(key)) {
-              return;
-            }
+          if (
+            processedGiftEvents.has(key)
+          ) {
+            return;
+          }
 
 
-            processedGiftEvents.set(
-              key,
-              Date.now()
-            );
+          processedGiftEvents.set(
+            key,
+            Date.now()
+          );
 
 
-            setTimeout(() => {
-              processedGiftEvents.delete(key);
-            }, 60000);
+          setTimeout(() => {
+
+            processedGiftEvents.delete(key);
+
+          }, 60000);
 
 
 
-            console.log(
-              `GIFT @${username}: ${giftName} | ${diamondCount}`
-            );
+          console.log(
+            `GIFT @${username}: ${giftName} | ${diamondCount}`
+          );
 
 
-            if (diamondCount > 0) {
 
-              saveGift(username, {
-                diamondCount,
-                repeatCount: 1,
-                giftName
-              });
+          if (diamondCount > 0) {
 
-            }
+            saveGift(username, {
+              diamondCount,
+              repeatCount: 1,
+              giftName
+            });
 
           }
 
-        });
+        }
 
-      }
+      });
 
 
     } catch (err) {
@@ -191,9 +227,12 @@ creators.forEach(connectCreator);
 app.get("/api/leaderboard", async (req, res) => {
 
 
-  const { data, error } = await supabase
-    .from("gift_events")
-    .select("creator_username, diamonds, created_at");
+  const { data, error } =
+    await supabase
+      .from("gift_events")
+      .select(
+        "creator_username, diamonds, created_at"
+      );
 
 
   if (error) {
@@ -202,6 +241,7 @@ app.get("/api/leaderboard", async (req, res) => {
       "Leaderboard error:",
       error.message
     );
+
 
     return res
       .status(500)
@@ -212,12 +252,15 @@ app.get("/api/leaderboard", async (req, res) => {
   }
 
 
+
   const totals = {};
+
 
 
   for (const gift of data || []) {
 
-    const username = gift.creator_username;
+    const username =
+      gift.creator_username;
 
 
     if (!totals[username]) {
@@ -227,9 +270,8 @@ app.get("/api/leaderboard", async (req, res) => {
     }
 
 
-    totals[username] += Number(
-      gift.diamonds || 0
-    );
+    totals[username] +=
+      Number(gift.diamonds || 0);
 
   }
 
@@ -237,17 +279,16 @@ app.get("/api/leaderboard", async (req, res) => {
 
   const leaderboard =
     Object.entries(totals)
-
       .map(([username, diamonds]) => ({
 
         username,
 
         diamonds,
 
-        live: liveCreators.has(username)
+        live:
+          liveCreators.has(username)
 
       }))
-
       .sort(
         (a, b) =>
           b.diamonds - a.diamonds
@@ -267,5 +308,7 @@ app.listen(PORT, () => {
   console.log(
     `Flight28 tracker running on port ${PORT}`
   );
+
+});
 
 });
