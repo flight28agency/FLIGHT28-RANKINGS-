@@ -1116,425 +1116,187 @@ footer{
 
 @media(max-width:760px){
 
-.ranking-main{
-    width:calc(100% - 24px);
-}
+    .ranking-main .podium{
 
+        display:grid;
+        grid-template-columns:1fr 1.12fr 1fr;
+        gap:8px;
+        align-items:end;
 
-/* PODIUM CONTAINER */
+        margin-top:40px;
+        margin-bottom:35px;
 
-.ranking-main .podium{
-    display:grid;
-    grid-template-columns:1fr 1.12fr 1fr;
-    gap:8px;
-    align-items:end;
-    margin-top:35px;
-    margin-bottom:35px;
-}
-
-
-/* CARDS */
-
-.ranking-main .podium-card{
-    min-height:190px !important;
-    padding:15px 6px !important;
-    border-radius:8px !important;
-    background:#181818 !important;
-    border:0 !important;
-    overflow:hidden;
-    justify-content:flex-end !important;
-}
-
-
-.ranking-main .podium-card.first{
-    min-height:225px !important;
-    transform:translateY(-18px) !important;
-    background:#1d1d1d !important;
-}
-
-
-/* BIG RANK NUMBERS */
-
-.podium-rank-number{
-    position:absolute;
-    top:-5px !important;
-    right:-5px !important;
-    font-size:110px !important;
-    line-height:1 !important;
-    opacity:.45 !important;
-    color:#888 !important;
-}
-
-
-.rank-1 .podium-rank-number{
-    font-size:135px !important;
-    color:#ff2b2f !important;
-    opacity:.65 !important;
-}
-
-
-.rank-2 .podium-rank-number{
-    color:#bfc4cb !important;
-}
-
-
-.rank-3 .podium-rank-number{
-    color:#b77d6c !important;
-}
-
-
-/* PROFILE */
-
-.ranking-main .podium-avatar-wrap{
-    width:70px !important;
-    height:70px !important;
-    margin-bottom:10px !important;
-    z-index:2;
-}
-
-
-.ranking-main .first .podium-avatar-wrap{
-    width:85px !important;
-    height:85px !important;
-}
-
-
-.ranking-main .podium-avatar{
-    border:4px solid #111 !important;
-}
-
-
-.ranking-main .first .podium-avatar{
-    border-color:#ff2b2f !important;
-}
-
-
-/* TEXT */
-
-.ranking-main .podium-info{
-    position:relative;
-    z-index:3;
-}
-
-
-.ranking-main .podium-info h3{
-    font-size:13px !important;
-    margin:5px 0 8px !important;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-
-.ranking-main .podium-score{
-    font-size:15px !important;
-    margin-top:5px !important;
-}
-/* =========================================
-   FLIGHT28 TIKTOK GOLD PODIUM STYLE
-========================================= */
-
-@media(max-width:760px){
-
-.ranking-main .podium{
-
-    display:grid;
-    grid-template-columns:1fr 1.12fr 1fr;
-    gap:8px;
-
-    align-items:end;
-
-    margin-top:40px;
-    margin-bottom:35px;
-
-}
-
-
-/* CARDS */
-
-.ranking-main .podium-card{
-
-    position:relative;
-
-    height:190px;
-    min-height:190px;
-
-    padding:0;
-
-    border-radius:4px;
-
-    background:#2b2b2b;
-
-    overflow:hidden;
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    align-items:center;
-
-}
-
-
-/* CENTER #1 */
-
-.ranking-main .podium-card.first{
-
-    height:225px;
-
-    min-height:225px;
-
-    transform:translateY(-15px);
-
-}
-
-
-
-/* GIANT NUMBERS */
-
-.podium-rank-number{
-
-    position:absolute;
-
-    top:-25px;
-
-    right:-5px;
-
-    font-size:210px;
-
-    line-height:1;
-
-    font-weight:900;
-
-    opacity:.85;
-
-    z-index:0;
-
-}
-
-
-/* GOLD */
-
-.rank-1 .podium-rank-number{
-
-    color:#e7c76b;
-
-}
-
-
-/* SILVER */
-
-.rank-2 .podium-rank-number{
-
-    color:#d7dbe2;
-
-}
-
-
-/* BRONZE */
-
-.rank-3 .podium-rank-number{
-
-    color:#d09a7b;
-
-}
-
-
-
-/* AVATAR CENTER */
-
-.ranking-main .podium-avatar-wrap{
-
-    position:absolute;
-
-    top:50%;
-
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    width:82px;
-
-    height:82px;
-
-    z-index:2;
-
-}
-
-
-
-.ranking-main .first .podium-avatar-wrap{
-
-    width:100px;
-
-    height:100px;
-
-}
-
-
-
-.ranking-main .podium-avatar{
-
-    border:3px solid #111;
-
-}
-
-
-
-/* TEXT BOTTOM */
-
-.ranking-main .podium-info{
-
-    position:absolute;
-
-    bottom:18px;
-
-    width:100%;
-
-    text-align:center;
-
-    z-index:3;
-
-}
-
-
-
-.ranking-main .podium-info h3{
-
-    font-size:13px;
-
-    margin:0 0 8px;
-
-    color:white;
-
-}
-
-
-
-.ranking-main .podium-score{
-
-    font-size:15px;
-
-    margin:0;
-
-    color:white;
-
-}
-
-
-
-}
-
-/* LOWER RANKINGS */
-
-.ranking-main .leader-row{
-    min-height:75px;
-}
-
-
-.ranking-main .avatar{
-    width:50px;
-    height:50px;
-}
-
-
-.ranking-main .creator-meta strong{
-    font-size:15px;
-}
-
-
-.ranking-main .diamond-value{
-    font-size:16px;
-}
-
-}
-/* =========================================
-   REMOVE RANK #1 RED RING
-   ONLY LIVE GETS RED
-========================================= */
-
-@media(max-width:760px){
-
-    .ranking-main .first .podium-avatar{
-        border-color:#111 !important;
-        box-shadow:none !important;
     }
 
-    .ranking-main .podium-live{
-        background:#ff2b2f !important;
-    }
 
-}
-/* =========================================
-   TIKTOK STYLE PODIUM COLORS + SCALE
-========================================= */
-
-@media(max-width:760px){
+    /* PODIUM CARDS */
 
     .ranking-main .podium-card{
-        height:185px !important;
-        min-height:185px !important;
+
+        position:relative;
+
+        height:180px;
+        min-height:180px;
+
+        padding:0 !important;
+
+        border-radius:6px;
+
+        background:#242424;
+
+        overflow:hidden;
+
+        display:flex;
+
+        justify-content:center;
+
+        align-items:center;
+
     }
+
 
     .ranking-main .podium-card.first{
-        height:215px !important;
-        min-height:215px !important;
+
+        height:215px;
+        min-height:215px;
+
+        transform:translateY(-15px);
+
     }
 
 
-    /* BIGGER CENTERED NUMBERS */
+
+    /* BIG BACKGROUND NUMBERS */
 
     .podium-rank-number{
 
-        top:50% !important;
-        right:50% !important;
+        position:absolute;
 
-        transform:translate(50%,-52%) !important;
+        top:50%;
+        right:50%;
 
-        font-size:230px !important;
+        transform:translate(50%,-50%);
 
-        line-height:.8 !important;
+        font-size:150px;
 
-        opacity:.65 !important;
+        line-height:.8;
+
+        font-weight:900;
+
+        opacity:.65;
+
+        z-index:1;
 
     }
 
+
+    /* GOLD */
 
     .rank-1 .podium-rank-number{
 
-        font-size:270px !important;
+        color:#e6c76a;
 
-        color:#e6c76a !important;
+        font-size:180px;
 
     }
 
+
+    /* SILVER */
 
     .rank-2 .podium-rank-number{
 
-        color:#d7dce3 !important;
+        color:#d7dce3;
 
     }
 
+
+    /* BRONZE */
 
     .rank-3 .podium-rank-number{
 
-        color:#c98d68 !important;
+        color:#c98d68;
 
     }
 
 
-    /* KEEP PROFILE ABOVE NUMBER */
+
+    /* PROFILE CENTER */
 
     .ranking-main .podium-avatar-wrap{
 
-        z-index:5 !important;
+        position:absolute;
+
+        top:50%;
+        left:50%;
+
+        transform:translate(-50%,-55%);
+
+        width:78px;
+        height:78px;
+
+        z-index:3;
 
     }
 
 
+    .ranking-main .first .podium-avatar-wrap{
+
+        width:92px;
+        height:92px;
+
+    }
+
+
+
+    /* REMOVE #1 RED BORDER */
+
+    .ranking-main .first .podium-avatar{
+
+        border-color:#111 !important;
+
+        box-shadow:none !important;
+
+    }
+
+
+
+    /* TEXT */
+
     .ranking-main .podium-info{
 
-        z-index:6 !important;
+        position:absolute;
+
+        bottom:15px;
+
+        width:100%;
+
+        text-align:center;
+
+        z-index:4;
+
+    }
+
+
+    .ranking-main .podium-info h3{
+
+        font-size:12px;
+
+        margin:0 0 6px;
+
+        white-space:nowrap;
+
+        overflow:hidden;
+
+        text-overflow:ellipsis;
+
+    }
+
+
+    .ranking-main .podium-score{
+
+        font-size:15px;
+
+        margin:0;
 
     }
 
