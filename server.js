@@ -90,12 +90,13 @@ if (eventType === "WebcastGiftMessage") {
     gift.giftDetails?.diamondCount || 0
   );
 
-  const repeatCount = Number(
-    gift.repeatCount || 1
-  );
+ const repeatCount = Number(
+  gift.repeatCount || 1
+);
 
-  const diamonds = diamondCount * repeatCount;
-
+// TikTok combo gifts send cumulative repeat counts.
+// Count each event as ONE gift so we don't double-count the combo.
+const diamonds = diamondCount;
   console.log(
     `GIFT @${username}: ${giftName} | ${diamondCount} x ${repeatCount} = ${diamonds}`
   );
@@ -103,7 +104,7 @@ if (eventType === "WebcastGiftMessage") {
   if (diamonds > 0) {
     saveGift(username, {
       diamondCount,
-      repeatCount,
+      repeatCount: 1,
       giftName
     });
   }
