@@ -82,36 +82,15 @@ ws.on("message", data => {
 if (eventType === "WebcastGiftMessage") {
   const gift = msg.data || msg;
 
-  const giftName =
-    gift.gift?.name ||
-    gift.giftName ||
-    gift.gift?.giftName ||
-    "TikTok Gift";
-
-  const diamondCount = Number(
-    gift.gift?.diamondCount ||
-    gift.gift?.diamond_count ||
-    gift.diamondCount ||
-    0
-  );
-
-  const repeatCount = Number(
-    gift.repeatCount ||
-    gift.repeat_count ||
-    1
-  );
-
-  const diamonds = diamondCount * repeatCount;
-
-  console.log(`GIFT @${username}: ${giftName} | ${diamondCount} x ${repeatCount} = ${diamonds}`);
-
-  if (diamonds > 0) {
-    saveGift(username, {
-      diamondCount,
-      repeatCount,
-      giftName
-    });
-  }
+  console.log(`GIFT DEBUG @${username}:`, JSON.stringify({
+    giftId: gift.giftId,
+    giftName: gift.giftName,
+    repeatCount: gift.repeatCount,
+    diamondCount: gift.diamondCount,
+    gift: gift.gift,
+    giftDetails: gift.giftDetails,
+    extendedGiftInfo: gift.extendedGiftInfo
+  }));
 }
       });
     }
