@@ -53,46 +53,127 @@ const reconnectTimers = new Map();
 
 
 app.get("/health", (req, res) => {
+
   res.json({
     status: "Flight28 tracker online"
   });
+
 });
 
+
+
+/*
+=========================================
+SAVE GIFT + UPDATE DAILY LEADERBOARD
+=========================================
+*/
 
 async function saveGift(username, giftName, diamonds) {
 
   diamonds = Number(diamonds || 0);
+
 
   if (diamonds <= 0) {
     return;
   }
 
 
+
+  // Save gift history
+
   const { error } = await supabase
     .from("gift_events")
     .insert({
+
       creator_username: username,
+
       diamonds: diamonds,
+
       gift_name: giftName || "TikTok Gift"
+
     });
+
 
 
   if (error) {
 
     console.log(
-      `Supabase error for @${username}:`,
+      `Supabase gift error @${username}:`,
       error.message
     );
 
     return;
+
   }
+
+
+
+
+  // Update daily leaderboard
+
+
+  const { data: existing, error: findError } =
+    await supabase
+      .from("daily_leaderboard")
+      .select("daily_diamonds")
+      .eq("username", username)
+      .maybeSingle();
+
+
+
+  if (findError) {
+
+    console.log(
+      "Leaderboard lookup error:",
+      findError.message
+    );
+
+  }
+
+
+
+  if (existing) {
+
+
+    await supabase
+      .from("daily_leaderboard")
+      .update({
+
+        daily_diamonds:
+          Number(existing.daily_diamonds || 0) + diamonds,
+
+        updated_at: new Date()
+
+      })
+      .eq("username", username);
+
+
+
+  } else {
+
+
+    await supabase
+      .from("daily_leaderboard")
+      .insert({
+
+        username: username,
+
+        daily_diamonds: diamonds,
+
+        updated_at: new Date()
+
+      });
+
+
+  }
+
 
 
   console.log(
     `${username} +${diamonds} diamonds`
   );
-}
 
+}
 
 function scheduleReconnect(username, delay = 30000) {
 
@@ -119,13 +200,18 @@ function scheduleReconnect(username, delay = 30000) {
     username,
     timer
   );
+
 }
+
+
 
 
 function connectCreator(username) {
 
+
   const oldConnection =
     creatorConnections.get(username);
+
 
 
   if (
@@ -135,8 +221,11 @@ function connectCreator(username) {
       oldConnection.readyState === WebSocket.CONNECTING
     )
   ) {
+
     return;
+
   }
+
 
 
   const wsUrl =
@@ -149,13 +238,16 @@ function connectCreator(username) {
     "&features.normalizeUniqueId=true";
 
 
+
   const ws = new WebSocket(wsUrl);
+
 
 
   creatorConnections.set(
     username,
     ws
   );
+
 
 
   ws.on("open", () => {
@@ -167,9 +259,13 @@ function connectCreator(username) {
   });
 
 
+
+
+
   ws.on("message", (data) => {
 
     try {
+
 
       const payload =
         JSON.parse(
@@ -177,12 +273,18 @@ function connectCreator(username) {
         );
 
 
+
       if (!Array.isArray(payload.messages)) {
+
         return;
+
       }
 
 
+
+
       for (const event of payload.messages) {
+
 
         const type =
           String(
@@ -192,8 +294,12 @@ function connectCreator(username) {
           );
 
 
+
         const lowerType =
           type.toLowerCase();
+
+
+
 
 
         if (
@@ -201,7 +307,6 @@ function connectCreator(username) {
           lowerType.includes("roommessage") ||
           lowerType.includes("roomuserseq") ||
           lowerType.includes("member") ||
-          lowerType.includes("chat") ||
           lowerType.includes("gift")
         ) {
 
@@ -210,13 +315,21 @@ function connectCreator(username) {
         }
 
 
+
+
         if (!lowerType.includes("gift")) {
+
           continue;
+
         }
+
+
+
 
 
         const gift =
           event.data || event;
+
 
 
         const giftDetails =
@@ -225,11 +338,17 @@ function connectCreator(username) {
           {};
 
 
+
+
+
         const giftName =
           gift.giftName ||
           giftDetails.giftName ||
           giftDetails.name ||
           "TikTok Gift";
+
+
+
 
 
         const diamondCount =
@@ -241,9 +360,17 @@ function connectCreator(username) {
           );
 
 
+
+
+
         if (diamondCount <= 0) {
+
           continue;
+
         }
+
+
+
 
 
         const messageId =
@@ -255,12 +382,18 @@ function connectCreator(username) {
           null;
 
 
+
+
+
         const repeatCount =
           Number(
             gift.repeatCount ||
             gift.repeat_count ||
             1
           );
+
+
+
 
 
         const repeatEnd =
@@ -271,12 +404,20 @@ function connectCreator(username) {
           true;
 
 
+
+
+
         if (
           repeatCount > 1 &&
           repeatEnd === false
         ) {
+
           continue;
+
         }
+
+
+
 
 
         const eventKey =
@@ -285,15 +426,26 @@ function connectCreator(username) {
             : `${username}:${giftName}:${diamondCount}:${repeatCount}`;
 
 
+
+
+
         if (processedEvents.has(eventKey)) {
+
           continue;
+
         }
+
+
+
 
 
         processedEvents.set(
           eventKey,
           Date.now()
         );
+
+
+
 
 
         setTimeout(() => {
@@ -305,13 +457,22 @@ function connectCreator(username) {
         }, 120000);
 
 
+
+
+
         const totalDiamonds =
           diamondCount * repeatCount;
+
+
+
 
 
         console.log(
           `GIFT @${username}: ${giftName} ${totalDiamonds}`
         );
+
+
+
 
 
         saveGift(
@@ -320,22 +481,28 @@ function connectCreator(username) {
           totalDiamonds
         );
 
+
+
       }
 
 
+
     } catch (err) {
+
 
       console.log(
         `Message error @${username}:`,
         err.message
       );
 
+
     }
+
 
   });
 
-
   ws.on("close", (code) => {
+
 
     creatorConnections.delete(
       username
@@ -347,11 +514,13 @@ function connectCreator(username) {
     );
 
 
+
     if (code === 4404) {
 
       console.log(
         `@${username} not detected LIVE yet. Retrying automatically.`
       );
+
 
       scheduleReconnect(
         username,
@@ -359,7 +528,10 @@ function connectCreator(username) {
       );
 
       return;
+
     }
+
+
 
 
     if (code === 4005) {
@@ -368,13 +540,17 @@ function connectCreator(username) {
         `@${username} LIVE ended. Retrying automatically.`
       );
 
+
       scheduleReconnect(
         username,
         30000
       );
 
       return;
+
     }
+
+
 
 
     if (code === 4006) {
@@ -383,13 +559,17 @@ function connectCreator(username) {
         `@${username} connection inactive. Reconnecting.`
       );
 
+
       scheduleReconnect(
         username,
         10000
       );
 
       return;
+
     }
+
+
 
 
     if (code === 4429) {
@@ -398,13 +578,17 @@ function connectCreator(username) {
         `@${username} connection limit reached. Retrying in 60 seconds.`
       );
 
+
       scheduleReconnect(
         username,
         60000
       );
 
       return;
+
     }
+
+
 
 
     if (code === 4500) {
@@ -413,13 +597,17 @@ function connectCreator(username) {
         `TikTok closed @${username} connection. Retrying.`
       );
 
+
       scheduleReconnect(
         username,
         15000
       );
 
       return;
+
     }
+
+
 
 
     console.log(
@@ -427,12 +615,17 @@ function connectCreator(username) {
     );
 
 
+
     scheduleReconnect(
       username,
       30000
     );
 
+
   });
+
+
+
 
 
   ws.on("error", (err) => {
@@ -444,7 +637,10 @@ function connectCreator(username) {
 
   });
 
+
 }
+
+
 
 
 for (const username of creators) {
@@ -454,94 +650,104 @@ for (const username of creators) {
 }
 
 
+
+
+
+
 app.get(
-  "/api/leaderboard",
-  async (req, res) => {
-
-    const { data, error } =
-      await supabase
-        .from("gift_events")
-        .select(
-          "creator_username, diamonds, created_at"
-        );
+"/api/leaderboard",
+async (req, res) => {
 
 
-    if (error) {
-
-      console.log(
-        "Leaderboard error:",
-        error.message
+  const { data, error } =
+    await supabase
+      .from("daily_leaderboard")
+      .select(
+        "username, daily_diamonds"
       );
 
 
-      return res
-        .status(500)
-        .json({
-          error: error.message
-        });
 
-    }
+  if (error) {
 
 
-    const totals = {};
+    console.log(
+      "Leaderboard error:",
+      error.message
+    );
 
 
-    for (const row of data || []) {
-
-      const username =
-        row.creator_username;
-
-
-      if (!totals[username]) {
-
-        totals[username] = 0;
-
-      }
+    return res
+      .status(500)
+      .json({
+        error: error.message
+      });
 
 
-      totals[username] +=
-        Number(
-          row.diamonds || 0
-        );
-
-    }
+  }
 
 
-    const leaderboard =
-      creators
-        .map((username) => ({
+
+
+
+  const leaderboard =
+    creators
+      .map((username) => {
+
+
+        const creator =
+          data?.find(
+            (row) =>
+              row.username === username
+          );
+
+
+
+        return {
 
           username,
 
+
           diamonds:
-            totals[username] || 0,
+            creator?.daily_diamonds || 0,
+
 
           live:
             liveCreators.has(username)
 
-        }))
-        .sort(
-          (a, b) =>
-            b.diamonds -
-            a.diamonds
-        );
+        };
 
 
-    res.json(
-      leaderboard
-    );
+      })
+      .sort(
+        (a,b) =>
+          b.diamonds -
+          a.diamonds
+      );
 
-  }
-);
+
+
+
+
+  res.json(
+    leaderboard
+  );
+
+
+});
+
+
+
+
+
 
 
 app.listen(
-  PORT,
-  () => {
+PORT,
+() => {
 
-    console.log(
-      `Flight28 tracker running on port ${PORT}`
-    );
+  console.log(
+    `Flight28 tracker running on port ${PORT}`
+  );
 
-  }
-);
+});
