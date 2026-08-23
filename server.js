@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { TikTokLiveConnection } = require("tiktok-live-connector");
+const WebSocket = require("ws");
 const app = express();
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://flight28agency.github.io");
