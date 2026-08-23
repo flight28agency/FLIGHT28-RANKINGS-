@@ -83,6 +83,7 @@ function connectCreator(username) {
     try {
 
       const payload = JSON.parse(data.toString());
+      console.log(payload.messages?.[0]?.type);
 
       if (payload && payload.messages) {
 
