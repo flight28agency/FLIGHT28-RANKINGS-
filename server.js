@@ -55,38 +55,39 @@ async function saveGift(username, gift) {
 }
 
 function connectCreator(username) {
-  const connection = new TikTokLiveConnection(username, {
-    enableExtendedGiftInfo: true,
-    signApiKey: process.env.EULER_API_KEY
+  const wsUrl =
+    `wss://ws.eulerstream.com?uniqueId=${encodeURIComponent(username)}&apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}`;
+
+  const ws = new WebSocket(wsUrl);
+
+  ws.on("open", () => {
+    console.log(`WebSocket opened for @${username}`);
+    liveCreators.add(username);
   });
 
-  connection.connect()
-    .then(state => {
-      console.log(`Connected to @${username}`, state.roomId);
-      liveCreators.add(username);
-    })
-    
-    .catch(err => {
-      console.log(`@${username} offline/unavailable:`, err.message);
-    });
+  ws.on("message", data => {
+    try {
+      const payload = JSON.parse(data.toString());
 
-  connection.on("gift", gift => {
-    // Streakable gifts fire multiple events. Only save when streak ends.
-    if (gift.giftType === 1 && !gift.repeatEnd) return;
-
-    saveGift(username, gift);
+      if (payload && payload.messages) {
+        payload.messages.forEach(msg => {
+          console.log(`@${username} event:`, msg);
+        });
+      }
+    } catch (err) {
+      console.log(`Could not parse event for @${username}:`, err.message);
+    }
   });
 
-  connection.on("disconnected", () => {
-    console.log(`Disconnected from @${username}`);
-liveCreators.delete(username);
-    
-    setTimeout(() => {
-      connectCreator(username);
-    }, 30000);
+  ws.on("close", (code, reason) => {
+    console.log(`WebSocket closed for @${username}:`, code, reason.toString());
+    liveCreators.delete(username);
+  });
+
+  ws.on("error", err => {
+    console.log(`WebSocket error for @${username}:`, err.message);
   });
 }
-
 creators.forEach(connectCreator);
 
 app.get("/api/leaderboard", async (req, res) => {
