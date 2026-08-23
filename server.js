@@ -65,19 +65,23 @@ function connectCreator(username) {
     liveCreators.add(username);
   });
 
-  ws.on("message", data => {
-    try {
-      const payload = JSON.parse(data.toString());
+ws.on("message", data => {
+  try {
+    const payload = JSON.parse(data.toString());
 
-      if (payload && payload.messages) {
-        payload.messages.forEach(msg => {
-          console.log(`@${username} event:`, msg);
-        });
-      }
-    } catch (err) {
-      console.log(`Could not parse event for @${username}:`, err.message);
+    if (payload && payload.messages) {
+      payload.messages.forEach(msg => {
+        const text = JSON.stringify(msg).toLowerCase();
+
+        if (text.includes("gift")) {
+          console.log(`GIFT EVENT @${username}:`, JSON.stringify(msg));
+        }
+      });
     }
-  });
+  } catch (err) {
+    console.log(`Could not parse event for @${username}:`, err.message);
+  }
+});
 
   ws.on("close", (code, reason) => {
     console.log(`WebSocket closed for @${username}:`, code, reason.toString());
