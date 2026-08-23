@@ -131,11 +131,7 @@ if (diamonds > 0) {
     repeatCount: 1,
     giftName
   });
-}
-});
-} catch (err) {
-  console.log(`Could not parse event for @${username}:`, err.message);
-}
+   } catch (err) {
   console.log(`Could not parse event for @${username}:`, err.message);
 }
 
