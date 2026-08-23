@@ -1171,3 +1171,11 @@ footer{
   }
 
 }
+@media (max-width:760px){
+
+  .ranking-main .podium-card,
+  .ranking-main .podium-card.first{
+    background:#242424 !important;
+  }
+
+}
