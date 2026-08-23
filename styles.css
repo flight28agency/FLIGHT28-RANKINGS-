@@ -1448,3 +1448,20 @@ footer{
 }
 
 }
+/* =========================================
+   REMOVE RANK #1 RED RING
+   ONLY LIVE GETS RED
+========================================= */
+
+@media(max-width:760px){
+
+    .ranking-main .first .podium-avatar{
+        border-color:#111 !important;
+        box-shadow:none !important;
+    }
+
+    .ranking-main .podium-live{
+        background:#ff2b2f !important;
+    }
+
+}
