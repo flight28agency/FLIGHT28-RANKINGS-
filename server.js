@@ -71,11 +71,15 @@ ws.on("message", data => {
 
     if (payload && payload.messages) {
       payload.messages.forEach(msg => {
-        const text = JSON.stringify(msg).toLowerCase();
+     const eventType =
+  msg.event ||
+  msg.type ||
+  msg.eventType ||
+  msg.method ||
+  msg.messageType ||
+  "UNKNOWN";
 
-        if (text.includes("gift")) {
-          console.log(`GIFT EVENT @${username}:`, JSON.stringify(msg));
-        }
+console.log(`EVENT TYPE @${username}: ${eventType}`);
       });
     }
   } catch (err) {
