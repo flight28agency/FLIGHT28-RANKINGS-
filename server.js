@@ -4,22 +4,33 @@ const WebSocket = require("ws");
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static(__dirname));
+
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
     "https://flight28agency.github.io"
   );
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
   next();
 });
 
-const PORT = process.env.PORT || 3000;
- 
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
 
 const creators = [
   "crymakesvideos",
@@ -28,10 +39,11 @@ const creators = [
   "kaitlynnalexx13"
 ];
 
-const liveCreators = new Set();
-const processedGiftEvents = new Set();
 
-app.use(express.static(__dirname));
+const liveCreators = new Set();
+const processedEvents = new Set();
+
+
 
 app.get("/health", (req, res) => {
   res.json({
@@ -40,9 +52,11 @@ app.get("/health", (req, res) => {
 });
 
 
+
 async function saveGift(username, giftName, diamonds) {
 
   if (!diamonds || diamonds <= 0) return;
+
 
   const { error } = await supabase
     .from("gift_events")
@@ -52,10 +66,15 @@ async function saveGift(username, giftName, diamonds) {
       gift_name: giftName
     });
 
+
   if (error) {
-    console.log("Supabase error:", error.message);
+    console.log(
+      "Supabase error:",
+      error.message
+    );
     return;
   }
+
 
   console.log(
     `${username} +${diamonds} diamonds`
@@ -64,49 +83,48 @@ async function saveGift(username, giftName, diamonds) {
 
 
 
+
+
 function connectCreator(username) {
 
   const wsUrl =
-    `wss://ws.eulerstream.com?apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}` +
+    "wss://ws.eulerstream.com" +
+    `?apiKey=${encodeURIComponent(process.env.EULER_API_KEY)}` +
     `&uniqueId=${encodeURIComponent(username)}` +
-    `&schemaVersion=v1` +
-    `&features.bundleEvents=true` +
-    `&features.rawMessages=true` +
-    `&features.normalizeUniqueId=true`;
+    "&schemaVersion=v2" +
+    "&features.bundleEvents=true" +
+    "&features.rawMessages=false" +
+    "&features.normalizeUniqueId=true";
+
 
   const ws = new WebSocket(wsUrl);
+
 
 
   ws.on("open", () => {
 
     console.log(
-      `WebSocket opened for @${username}`
+      `Connected to @${username}`
     );
 
-    liveCreators.add(username);
-
   });
+
 
 
   ws.on("message", (data) => {
 
     try {
 
-      const message = JSON.parse(
-        data.toString()
-      );
+      const payload =
+        JSON.parse(data.toString());
 
 
-      console.log(
-        "EVENT:",
-        message.messages?.map(m => m.type)
-      );
+      if (!payload.messages) {
+        return;
+      }
 
 
-      if (!message.messages) return;
-
-
-      message.messages.forEach((event) => {
+      payload.messages.forEach((event) => {
 
 
         const type =
@@ -115,21 +133,42 @@ function connectCreator(username) {
           "";
 
 
+        console.log(
+          `@${username} EVENT:`,
+          type
+        );
+
+
         if (
-          !type.toLowerCase().includes("gift")
+          type
+            .toLowerCase()
+            .includes("live")
+        ) {
+          liveCreators.add(username);
+        }
+
+
+
+        if (
+          !type
+            .toLowerCase()
+            .includes("gift")
         ) {
           return;
         }
+
 
 
         const gift =
           event.data || event;
 
 
+
         const giftName =
           gift.giftName ||
           gift.giftDetails?.giftName ||
           "TikTok Gift";
+
 
 
         const diamonds =
@@ -140,21 +179,25 @@ function connectCreator(username) {
           );
 
 
+
         const id =
-          `${username}-${giftName}-${diamonds}-${Date.now()}`;
+          `${username}-${giftName}-${diamonds}`;
 
 
-        if (processedGiftEvents.has(id)) {
+
+        if (processedEvents.has(id)) {
           return;
         }
 
 
-        processedGiftEvents.add(id);
+        processedEvents.add(id);
+
 
 
         console.log(
           `GIFT @${username}: ${giftName} ${diamonds}`
         );
+
 
 
         saveGift(
@@ -179,6 +222,19 @@ function connectCreator(username) {
   });
 
 
+
+  ws.on("close", (code) => {
+
+    console.log(
+      `Disconnected @${username} code ${code}`
+    );
+
+    liveCreators.delete(username);
+
+  });
+
+
+
   ws.on("error", (err) => {
 
     console.log(
@@ -188,18 +244,8 @@ function connectCreator(username) {
 
   });
 
-
-  ws.on("close", () => {
-
-    liveCreators.delete(username);
-
-    console.log(
-      `Disconnected @${username}`
-    );
-
-  });
-
 }
+
 
 
 
@@ -207,38 +253,50 @@ creators.forEach(connectCreator);
 
 
 
+
+
+
 app.get("/api/leaderboard", async (req, res) => {
 
-  const { data, error } = await supabase
-    .from("gift_events")
-    .select(
-      "creator_username, diamonds, created_at"
-    );
+
+  const { data, error } =
+    await supabase
+      .from("gift_events")
+      .select(
+        "creator_username, diamonds, created_at"
+      );
+
 
 
   if (error) {
 
-    return res.status(500).json({
-      error: error.message
-    });
+    return res
+      .status(500)
+      .json({
+        error: error.message
+      });
 
   }
+
 
 
   const totals = {};
 
 
-  for (const gift of data || []) {
 
-    if (!totals[gift.creator_username]) {
-      totals[gift.creator_username] = 0;
+  for (const row of data || []) {
+
+    if (!totals[row.creator_username]) {
+      totals[row.creator_username] = 0;
     }
 
 
-    totals[gift.creator_username] +=
-      Number(gift.diamonds || 0);
+    totals[row.creator_username] +=
+      Number(row.diamonds || 0);
 
   }
+
+
 
 
   const leaderboard =
@@ -249,14 +307,19 @@ app.get("/api/leaderboard", async (req, res) => {
         live: liveCreators.has(username)
       }))
       .sort(
-        (a,b) =>
+        (a, b) =>
           b.diamonds - a.diamonds
       );
 
 
+
   res.json(leaderboard);
 
+
 });
+
+
+
 
 
 
