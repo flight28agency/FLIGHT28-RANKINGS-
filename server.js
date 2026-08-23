@@ -173,3 +173,5 @@ live: liveCreators.has(username)
 app.listen(PORT, () => {
   console.log(`Flight28 tracker running on port ${PORT}`);
 });
+
+}
