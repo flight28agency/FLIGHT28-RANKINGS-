@@ -79,7 +79,9 @@ ws.on("message", data => {
   msg.messageType ||
   "UNKNOWN";
 
-console.log(`EVENT TYPE @${username}: ${eventType}`);
+if (eventType === "WebcastGiftMessage") {
+  console.log(`GIFT PAYLOAD @${username}:`, JSON.stringify(msg));
+}
       });
     }
   } catch (err) {
