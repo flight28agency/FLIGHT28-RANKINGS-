@@ -90,7 +90,7 @@ if (eventType === "WebcastGiftMessage") {
   msg.msgId ||
   msg.messageId;
   if (eventId) {
-  const key = `${username}:${eventId}`;
+ const key = `${username}:${giftName}:${diamondCount}:${repeatCount}`;
 
   if (processedGiftEvents.has(key)) {
     return;
