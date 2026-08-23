@@ -39,8 +39,8 @@ const creators = [
   "crymakesvideos",
   "frcohen40",
   "__eacxo",
-  "kaitlynnalexx13"
-  "cala.mari456"
+  "kaitlynnalexx13",
+  "cala.mari456",
 ];
 
 
