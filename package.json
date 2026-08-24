@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
+    "axios": "^1.7.0",
     "express": "^5.1.0",
-  "tiktok-live-connector": "^2.1.1",
-"ws": "^8.18.3"
+    "tiktok-live-connector": "^2.1.1",
+    "ws": "^8.18.3"
   }
 }
