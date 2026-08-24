@@ -127,7 +127,7 @@ async function saveGift(username, giftName, diamonds) {
   const { data: existing, error: findError } =
     await supabase
       .from("daily_leaderboard")
-      .select("daily_diamonds")
+      .select("daily_diamonds, weekly_diamonds")
       .eq("username", username)
       .maybeSingle();
 
@@ -151,12 +151,15 @@ async function saveGift(username, giftName, diamonds) {
       .from("daily_leaderboard")
       .update({
 
-        daily_diamonds:
-          Number(existing.daily_diamonds || 0) + diamonds,
+  daily_diamonds:
+    Number(existing.daily_diamonds || 0) + diamonds,
 
-        updated_at: new Date()
+  weekly_diamonds:
+    Number(existing.weekly_diamonds || 0) + diamonds,
 
-      })
+  updated_at: new Date()
+
+})
       .eq("username", username);
 
 
@@ -168,13 +171,15 @@ async function saveGift(username, giftName, diamonds) {
       .from("daily_leaderboard")
       .insert({
 
-        username: username,
+  username: username,
 
-        daily_diamonds: diamonds,
+  daily_diamonds: diamonds,
 
-        updated_at: new Date()
+  weekly_diamonds: diamonds,
 
-      });
+  updated_at: new Date()
+
+})
 
 
   }
