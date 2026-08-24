@@ -145,8 +145,23 @@ document.querySelectorAll(".tab").forEach(tab => {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
     currentPeriod = tab.dataset.period;
-    document.querySelector("#resetLabel").textContent =
-      `${tab.textContent.toUpperCase()} RANKINGS RESET IN`;
+    const label = document.querySelector("#resetLabel");
+
+if (currentPeriod === "daily") {
+  label.textContent = "DAILY RANKINGS RESET IN";
+}
+
+if (currentPeriod === "weekly") {
+  label.textContent = "WEEKLY RANKINGS RESET IN";
+}
+
+if (currentPeriod === "monthly") {
+  label.textContent = "MONTHLY RANKINGS RESET IN";
+}
+
+if (currentPeriod === "alltime") {
+  label.textContent = "ALL TIME RANKINGS";
+}
     render();
   });
 });
@@ -158,9 +173,9 @@ function updateCountdown() {
   const now = new Date();
   let target = new Date();
 
-  if (currentPeriod === "daily") {
-    target.setHours(24,0,0,0);
-  } else if (currentPeriod === "weekly") {
+ if (currentPeriod === "daily") {
+  target.setHours(22,0,0,0);
+}else if (currentPeriod === "weekly") {
     const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
     target.setDate(now.getDate() + daysUntilMonday);
     target.setHours(0,0,0,0);
