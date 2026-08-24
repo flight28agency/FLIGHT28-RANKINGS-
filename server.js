@@ -462,27 +462,19 @@ function connectCreator(username) {
 
 
 
-        const totalDiamonds =
-          diamondCount * repeatCount;
+       const totalDiamonds = diamondCount;
 
 
+console.log(
+  `GIFT @${username}: ${giftName} ${totalDiamonds}`
+);
 
 
-
-        console.log(
-          `GIFT @${username}: ${giftName} ${totalDiamonds}`
-        );
-
-
-
-
-
-        saveGift(
-          username,
-          giftName,
-          totalDiamonds
-        );
-
+saveGift(
+  username,
+  giftName,
+  totalDiamonds
+);
 
 
       }
