@@ -161,31 +161,39 @@ function updateCountdown() {
   const now = new Date();
   let target = new Date();
 
-if (currentPeriod === "daily") {
-  target.setHours(22,0,0,0);
+  if (currentPeriod === "daily") {
+    target.setHours(22,0,0,0);
 
-  if (target <= now) {
-    target.setDate(target.getDate() + 1);
-  }
-}else if (currentPeriod === "weekly") {
+    if (target <= now) {
+      target.setDate(target.getDate() + 1);
+    }
+
+  } else if (currentPeriod === "weekly") {
+
     const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
     target.setDate(now.getDate() + daysUntilMonday);
     target.setHours(0,0,0,0);
-  } else if (currentPeriod === "monthly") {
-    target = new Date(now.getFullYear(), now.getMonth()+1, 1);
+
   } else {
     document.querySelector("#countdown").textContent = "NO RESET";
     return;
   }
 
-  let diff = Math.max(0, target-now);
-  const h = Math.floor(diff / 3600000);
+  let diff = Math.max(0, target - now);
+
   const d = Math.floor(diff / 86400000);
-diff -= d * 86400000;
+  diff -= d * 86400000;
 
+  const h = Math.floor(diff / 3600000);
+  diff -= h * 3600000;
 
-document.querySelector("#countdown").textContent =
-`${d}D ${h}H ${m}M ${s}S`;
+  const m = Math.floor(diff / 60000);
+  diff -= m * 60000;
+
+  const s = Math.floor(diff / 1000);
+
+  document.querySelector("#countdown").textContent =
+    `${d}D ${h}H ${m}M ${s}S`;
 }
 
 setInterval(updateCountdown,1000);
