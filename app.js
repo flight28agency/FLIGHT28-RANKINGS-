@@ -17,11 +17,9 @@ async function loadLeaderboard() {
         alltime: 0
       },
       diamonds: {
-        daily: Number(creator.diamonds || 0),
-        weekly: Number(creator.diamonds || 0),
-        monthly: Number(creator.diamonds || 0),
-        alltime: Number(creator.diamonds || 0)
-      },
+  daily: Number(creator.daily || 0),
+  weekly: Number(creator.weekly || 0)
+},
       change: {
         daily: 0,
         weekly: 0,
