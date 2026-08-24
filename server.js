@@ -790,67 +790,48 @@ await supabase
 
 
 
-  const leaderboard =
-   const profile =
-creatorProfiles?.find(
-(profile) =>
-profile.username === username
+ const leaderboard =
+creators
+.map((username) => {
+
+  const creator =
+    data?.find(
+      (row) =>
+        row.username === username
+    );
+
+  const profile =
+    creatorProfiles?.find(
+      (profile) =>
+        profile.username === username
+    );
+
+  return {
+
+    username,
+
+    display_name:
+      profile?.display_name || username,
+
+    avatar_url:
+      profile?.avatar_url || null,
+
+    daily:
+      creator?.daily_diamonds || 0,
+
+    weekly:
+      creator?.weekly_diamonds || 0,
+
+    live:
+      liveCreators.has(username)
+
+  };
+
+})
+.sort(
+  (a,b) =>
+    b.daily - a.daily
 );
-
-return {
-
-username,
-
-display_name:
-profile?.display_name || username,
-
-avatar_url:
-profile?.avatar_url || null,
-
-daily:
-creator?.daily_diamonds || 0,
-
-weekly:
-creator?.weekly_diamonds || 0,
-
-live:
-liveCreators.has(username)
-
-};
-
-
-        const creator =
-          data?.find(
-            (row) =>
-              row.username === username
-          );
-
-
-
-      return {
-
-username,
-
-avatar_url:
-creator?.avatar_url || null,
-
-daily:
-creator?.daily_diamonds || 0,
-
-weekly:
-creator?.weekly_diamonds || 0,
-
-live:
-liveCreators.has(username)
-
-};
-
-
-      })
-      .sort(
-        (a,b) =>
-          b.daily - a.daily
-      );
 
 
 
