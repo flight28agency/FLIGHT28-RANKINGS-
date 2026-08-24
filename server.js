@@ -1244,6 +1244,56 @@ app.get(
 
   }
 );
+/*
+RANKING HISTORY API
+*/
+
+app.get(
+  "/api/history",
+  async (req, res) => {
+
+    const { data, error } =
+      await supabase
+        .from("daily_history")
+        .select(
+          "username, diamonds, rank, date"
+        )
+        .order(
+          "date",
+          {
+            ascending: false
+          }
+        )
+        .order(
+          "rank",
+          {
+            ascending: true
+          }
+        )
+        .limit(100);
+
+
+    if (error) {
+
+      console.log(
+        "History error:",
+        error.message
+      );
+
+      return res
+        .status(500)
+        .json({
+          error:
+            error.message
+        });
+
+    }
+
+
+    res.json(data);
+
+  }
+);
 
 
 /*
