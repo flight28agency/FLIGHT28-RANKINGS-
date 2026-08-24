@@ -163,8 +163,12 @@ function updateCountdown() {
   const now = new Date();
   let target = new Date();
 
- if (currentPeriod === "daily") {
+if (currentPeriod === "daily") {
   target.setHours(22,0,0,0);
+
+  if (target <= now) {
+    target.setDate(target.getDate() + 1);
+  }
 }else if (currentPeriod === "weekly") {
     const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
     target.setDate(now.getDate() + daysUntilMonday);
