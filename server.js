@@ -675,9 +675,9 @@ async (req, res) => {
   const { data, error } =
     await supabase
       .from("daily_leaderboard")
-      .select(
-        "username, daily_diamonds"
-      );
+     .select(
+"username, daily_diamonds, weekly_diamonds"
+);
 
 
 
@@ -716,19 +716,20 @@ async (req, res) => {
 
 
 
-        return {
+       return {
 
-          username,
+  username,
 
+  daily:
+    creator?.daily_diamonds || 0,
 
-          diamonds:
-            creator?.daily_diamonds || 0,
+  weekly:
+    creator?.weekly_diamonds || 0,
 
+  live:
+    liveCreators.has(username)
 
-          live:
-            liveCreators.has(username)
-
-        };
+};
 
 
       })
