@@ -1258,14 +1258,18 @@ setInterval(
 
 
     if (
-      now.getDay() === 1 &&
-      now.getHours() === 0 &&
-      now.getMinutes() === 0
-    ) {
+  now.getHours() === 0 &&
+  now.getMinutes() === 0
+) {
 
-      resetWeeklyLeaderboard();
+  saveDailyHistory()
+    .then(() => {
 
-    }
+      resetDailyLeaderboard();
+
+    });
+
+}
 
   },
   60000
