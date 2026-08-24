@@ -34,6 +34,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+console.log("Supabase URL loaded:", !!process.env.SUPABASE_URL);
+console.log("Service key loaded:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 let creators = [];
 
