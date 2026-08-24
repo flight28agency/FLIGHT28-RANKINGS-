@@ -259,3 +259,6 @@ if (closeHistory) {
   };
 
 }
+if (historyModal) {
+  historyModal.style.display = "none";
+}
