@@ -55,6 +55,65 @@ const { data, error } = await supabase
   console.log("Loaded creators:", creators);
 }
 
+async function updateCreatorAvatars() {
+  const { data: creatorsData, error } = await supabase
+    .from("creators")
+    .select("id, username, avatar_url");
+
+  if (error) {
+    console.log("Avatar load error:", error.message);
+    return;
+  }
+
+  for (const creator of creatorsData) {
+    try {
+
+      if (creator.avatar_url) {
+        continue;
+      }
+
+      const response = await axios.get(
+        `https://www.tiktok.com/@${creator.username}`,
+        {
+          headers: {
+            "User-Agent": "Mozilla/5.0"
+          }
+        }
+      );
+
+      const html = response.data;
+
+      const match = html.match(
+        /"avatarLarger":"(.*?)"/
+      );
+
+      if (!match) {
+        console.log(`No avatar found for @${creator.username}`);
+        continue;
+      }
+
+      const avatarUrl = match[1]
+        .replace(/\\u002F/g, "/");
+
+      await supabase
+        .from("creators")
+        .update({
+          avatar_url: avatarUrl,
+          avatar_updated_at: new Date()
+        })
+        .eq("id", creator.id);
+
+      console.log(`Updated avatar @${creator.username}`);
+
+    } catch (err) {
+      console.log(
+        `Avatar error @${creator.username}:`,
+        err.message
+      );
+    }
+  }
+}
+
 
 const liveCreators = new Set();
 
@@ -672,13 +731,15 @@ saveGift(
 
 
 
-loadCreators().then(() => {
+loadCreators().then(async () => {
 
-  for (const username of creators) {
+await updateCreatorAvatars();
 
-    connectCreator(username);
+for (const username of creators) {
 
-  }
+connectCreator(username);
+
+}
 
 });
 
