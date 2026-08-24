@@ -6,8 +6,8 @@ async function loadLeaderboard() {
     const data = await response.json();
 
     creators = data.map((creator) => ({
-      name: creator.username,
-      username: `@${creator.username}`,
+      name: creator.display_name || creator.username,
+username: `@${creator.username}`,
      avatar: creator.avatar_url || `https://api.dicebear.com/9.x/initials/svg?seed=${creator.username}`,
       live: Boolean(creator.live),
       hours: {
