@@ -62,6 +62,25 @@ const processedEvents = new Map();
 const creatorConnections = new Map();
 
 const reconnectTimers = new Map();
+async function resetWeeklyLeaderboard() {
+
+  const { error } = await supabase
+    .from("daily_leaderboard")
+    .update({
+      weekly_diamonds: 0,
+      updated_at: new Date()
+    });
+
+  if (error) {
+    console.log(
+      "Weekly reset error:",
+      error.message
+    );
+    return;
+  }
+
+  console.log("Weekly leaderboard reset.");
+}
 
 
 app.get("/health", (req, res) => {
@@ -752,8 +771,21 @@ async (req, res) => {
 
 
 
+setInterval(() => {
 
+  const now = new Date();
 
+  if (
+    now.getDay() === 1 &&
+    now.getHours() === 0 &&
+    now.getMinutes() === 0
+  ) {
+
+    resetWeeklyLeaderboard();
+
+  }
+
+}, 60000);
 
 
 app.listen(
