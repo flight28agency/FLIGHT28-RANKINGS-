@@ -1,6 +1,7 @@
 const express = require("express");
 const { createClient } = require("@supabase/supabase-js");
 const WebSocket = require("ws");
+const axios = require("axios");
 
 const app = express();
 
@@ -40,10 +41,10 @@ console.log("Service key loaded:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 let creators = [];
 
 async function loadCreators() {
-  const { data, error } = await supabase
-    .from("creators")
-    .select("username");
-
+const { data, error } = await supabase
+.from("creators")
+.select("username, avatar_url");
+  
   if (error) {
     console.log("Creator load error:", error.message);
     return;
