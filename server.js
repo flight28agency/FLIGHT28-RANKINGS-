@@ -735,9 +735,15 @@ loadCreators().then(async () => {
 
 await updateCreatorAvatars();
 
-for (const username of creators) {
+for (let i = 0; i < creators.length; i++) {
 
-connectCreator(username);
+  const username = creators[i];
+
+  setTimeout(() => {
+
+    connectCreator(username);
+
+  }, i * 3000);
 
 }
 
