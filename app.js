@@ -142,27 +142,17 @@ function render(){
 
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
+    
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    
     tab.classList.add("active");
+    
     currentPeriod = tab.dataset.period;
-    const label = document.querySelector("#resetLabel");
-
-if (currentPeriod === "daily") {
-  label.textContent = "DAILY RANKINGS RESET IN";
-}
-
-if (currentPeriod === "weekly") {
-  label.textContent = "WEEKLY RANKINGS RESET IN";
-}
-
-if (currentPeriod === "monthly") {
-  label.textContent = "MONTHLY RANKINGS RESET IN";
-}
-
-if (currentPeriod === "alltime") {
-  label.textContent = "ALL TIME RANKINGS";
-}
-    render();
+    
+ const label = document.querySelector("#resetLabel");
+label.textContent = "RESET IN";
+    
+    render(); 
   });
 });
 
