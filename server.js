@@ -755,9 +755,9 @@ async (req, res) => {
 
   const { data, error } =
     await supabase
-      .from("daily_leaderboard")
-     .select(
-"username, daily_diamonds, weekly_diamonds, avatar_url"
+    .from("daily_leaderboard")
+.select(
+"username, daily_diamonds, weekly_diamonds"
 );
 
 
