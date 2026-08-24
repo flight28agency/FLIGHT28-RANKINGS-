@@ -93,112 +93,108 @@ UPDATE CREATOR AVATARS
 */
 
 async function updateCreatorAvatars() {
-
-  const {
-    data: creatorsData,
-    error
-  } =
-    await supabase
-      .from("creators")
-      .select(
-        "id, username, avatar_url"
-      );
-
+  const { data: creatorsData, error } = await supabase
+    .from("creators")
+    .select("id, username, avatar_url");
 
   if (error) {
-
-    console.log(
-      "Avatar load error:",
-      error.message
-    );
-
+    console.log("Avatar load error:", error.message);
     return;
   }
 
-
-  for (
-    const creator of creatorsData
-  ) {
-
+  for (const creator of creatorsData) {
     try {
+      const response = await axios.get(
+        `https://www.tiktok.com/@${creator.username}`,
+        {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1",
+            "Accept":
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9"
+          },
+          timeout: 15000
+        }
+      );
 
-      if (creator.avatar_url) {
-        continue;
+      const html = response.data;
+
+      // TikTok can expose the profile photo under different fields.
+      const patterns = [
+        /"avatarLarger":"([^"]+)"/,
+        /"avatarMedium":"([^"]+)"/,
+        /"avatarThumb":"([^"]+)"/,
+        /"avatar_larger":\{"url_list":\["([^"]+)"/,
+        /"avatar_medium":\{"url_list":\["([^"]+)"/,
+        /"avatar_thumb":\{"url_list":\["([^"]+)"/
+      ];
+
+      let avatarUrl = null;
+
+      for (const pattern of patterns) {
+        const match = html.match(pattern);
+
+        if (match && match[1]) {
+          avatarUrl = match[1];
+          break;
+        }
       }
 
-
-      const response =
-        await axios.get(
-          `https://www.tiktok.com/@${creator.username}`,
-          {
-            headers: {
-              "User-Agent":
-                "Mozilla/5.0"
-            }
-          }
-        );
-
-
-      const html =
-        response.data;
-
-
-      const match =
-        html.match(
-          /"avatarLarger":"(.*?)"/
-        );
-
-
-      if (!match) {
-
+      if (!avatarUrl) {
         console.log(
           `No avatar found for @${creator.username}`
         );
-
         continue;
       }
 
+      // Decode TikTok's escaped URL.
+      avatarUrl = avatarUrl
+        .replace(/\\u002F/g, "/")
+        .replace(/\\u0026/g, "&")
+        .replace(/\\\//g, "/");
 
-      const avatarUrl =
-        match[1].replace(
-          /\\u002F/g,
-          "/"
+      // Only update Supabase when necessary.
+      if (creator.avatar_url === avatarUrl) {
+        console.log(
+          `Avatar already current @${creator.username}`
         );
+        continue;
+      }
 
-
-      await supabase
+      const { error: updateError } = await supabase
         .from("creators")
         .update({
-
-          avatar_url:
-            avatarUrl,
-
-          avatar_updated_at:
-            new Date()
-
+          avatar_url: avatarUrl,
+          avatar_updated_at: new Date()
         })
-        .eq(
-          "id",
-          creator.id
-        );
+        .eq("id", creator.id);
 
+      if (updateError) {
+        console.log(
+          `Avatar database error @${creator.username}:`,
+          updateError.message
+        );
+        continue;
+      }
 
       console.log(
         `Updated avatar @${creator.username}`
       );
 
-
     } catch (err) {
-
       console.log(
         `Avatar error @${creator.username}:`,
         err.message
       );
-
     }
+
+    // Small delay so we aren't hammering TikTok.
+    await new Promise(resolve =>
+      setTimeout(resolve, 750)
+    );
   }
 }
-
 
 /*
 CONNECTION TRACKING
