@@ -113,7 +113,7 @@ const visible = getVisibleCreators().filter(c => rankedCreators().findIndex(x =>
     const node = rowTemplate.content.cloneNode(true);
     const row = node.querySelector(".leader-row");
     const rank = node.querySelector(".rank-cell");
-    rank.textContent = `#${actualRank}`;
+    rank.textContent = actualRank};
     if (actualRank <= 3) rank.classList.add("top-rank");
 
     const avatarWrap = node.querySelector(".avatar-wrap");
