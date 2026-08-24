@@ -183,13 +183,6 @@ if (currentPeriod === "daily") {
   const d = Math.floor(diff / 86400000);
 diff -= d * 86400000;
 
-const h = Math.floor(diff / 3600000);
-diff -= h * 3600000;
-
-const m = Math.floor(diff / 60000);
-diff -= m * 60000;
-
-const s = Math.floor(diff / 1000);
 
 document.querySelector("#countdown").textContent =
 `${d}D ${h}H ${m}M ${s}S`;
