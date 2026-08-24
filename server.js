@@ -29,10 +29,12 @@ app.use((req, res, next) => {
   next();
 });
 
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
 
 console.log(
   "Supabase URL loaded:",
@@ -44,24 +46,40 @@ console.log(
   !!process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+
 let creators = [];
 
+
+/*
+LOAD CREATORS
+*/
+
 async function loadCreators() {
-  const { data, error } = await supabase
-    .from("creators")
-    .select("username, avatar_url");
+
+  const { data, error } =
+    await supabase
+      .from("creators")
+      .select(
+        "username, avatar_url"
+      );
+
 
   if (error) {
+
     console.log(
       "Creator load error:",
       error.message
     );
+
     return;
   }
 
+
   creators = data.map(
-    (creator) => creator.username
+    (creator) =>
+      creator.username
   );
+
 
   console.log(
     "Loaded creators:",
@@ -70,51 +88,76 @@ async function loadCreators() {
 }
 
 
+/*
+UPDATE CREATOR AVATARS
+*/
+
 async function updateCreatorAvatars() {
-  const { data: creatorsData, error } =
+
+  const {
+    data: creatorsData,
+    error
+  } =
     await supabase
       .from("creators")
       .select(
         "id, username, avatar_url"
       );
 
+
   if (error) {
+
     console.log(
       "Avatar load error:",
       error.message
     );
+
     return;
   }
 
-  for (const creator of creatorsData) {
+
+  for (
+    const creator of creatorsData
+  ) {
+
     try {
 
       if (creator.avatar_url) {
         continue;
       }
 
-      const response = await axios.get(
-        `https://www.tiktok.com/@${creator.username}`,
-        {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0"
+
+      const response =
+        await axios.get(
+          `https://www.tiktok.com/@${creator.username}`,
+          {
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0"
+            }
           }
-        }
-      );
+        );
 
-      const html = response.data;
 
-      const match = html.match(
-        /"avatarLarger":"(.*?)"/
-      );
+      const html =
+        response.data;
+
+
+      const match =
+        html.match(
+          /"avatarLarger":"(.*?)"/
+        );
+
 
       if (!match) {
+
         console.log(
           `No avatar found for @${creator.username}`
         );
+
         continue;
       }
+
 
       const avatarUrl =
         match[1].replace(
@@ -122,21 +165,28 @@ async function updateCreatorAvatars() {
           "/"
         );
 
+
       await supabase
         .from("creators")
         .update({
-          avatar_url: avatarUrl,
+
+          avatar_url:
+            avatarUrl,
+
           avatar_updated_at:
             new Date()
+
         })
         .eq(
           "id",
           creator.id
         );
 
+
       console.log(
         `Updated avatar @${creator.username}`
       );
+
 
     } catch (err) {
 
@@ -150,13 +200,21 @@ async function updateCreatorAvatars() {
 }
 
 
-const liveCreators = new Set();
+/*
+CONNECTION TRACKING
+*/
 
-const processedEvents = new Map();
+const liveCreators =
+  new Set();
 
-const creatorConnections = new Map();
+const processedEvents =
+  new Map();
 
-const reconnectTimers = new Map();
+const creatorConnections =
+  new Map();
+
+const reconnectTimers =
+  new Map();
 
 
 /*
@@ -173,8 +231,11 @@ async function saveDailyHistory() {
       )
       .order(
         "daily_diamonds",
-        { ascending: false }
+        {
+          ascending: false
+        }
       );
+
 
   if (error) {
 
@@ -186,20 +247,24 @@ async function saveDailyHistory() {
     return;
   }
 
+
   const today =
     new Date()
       .toISOString()
       .split("T")[0];
 
+
   const rows =
     data.map(
       (creator, index) => ({
+
         username:
           creator.username,
 
         diamonds:
           Number(
-            creator.daily_diamonds || 0
+            creator.daily_diamonds ||
+            0
           ),
 
         rank:
@@ -207,10 +272,14 @@ async function saveDailyHistory() {
 
         date:
           today
+
       })
     );
 
-  if (rows.length === 0) {
+
+  if (
+    rows.length === 0
+  ) {
 
     console.log(
       "No daily rankings to save."
@@ -219,10 +288,14 @@ async function saveDailyHistory() {
     return;
   }
 
-  const { error: insertError } =
+
+  const {
+    error: insertError
+  } =
     await supabase
       .from("daily_history")
       .insert(rows);
+
 
   if (insertError) {
 
@@ -234,8 +307,45 @@ async function saveDailyHistory() {
     return;
   }
 
+
   console.log(
     "Daily ranking history saved."
+  );
+}
+
+
+/*
+RESET DAILY LEADERBOARD
+*/
+
+async function resetDailyLeaderboard() {
+
+  const { error } =
+    await supabase
+      .from("daily_leaderboard")
+      .update({
+
+        daily_diamonds: 0,
+
+        updated_at:
+          new Date()
+
+      });
+
+
+  if (error) {
+
+    console.log(
+      "Daily reset error:",
+      error.message
+    );
+
+    return;
+  }
+
+
+  console.log(
+    "Daily leaderboard reset."
   );
 }
 
@@ -246,12 +356,18 @@ RESET WEEKLY LEADERBOARD
 
 async function resetWeeklyLeaderboard() {
 
-  const { error } = await supabase
-    .from("daily_leaderboard")
-    .update({
-      weekly_diamonds: 0,
-      updated_at: new Date()
-    });
+  const { error } =
+    await supabase
+      .from("daily_leaderboard")
+      .update({
+
+        weekly_diamonds: 0,
+
+        updated_at:
+          new Date()
+
+      });
+
 
   if (error) {
 
@@ -263,11 +379,16 @@ async function resetWeeklyLeaderboard() {
     return;
   }
 
+
   console.log(
     "Weekly leaderboard reset."
   );
 }
 
+
+/*
+HEALTH CHECK
+*/
 
 app.get(
   "/health",
@@ -283,7 +404,7 @@ app.get(
 
 
 /*
-SAVE GIFT + UPDATE DAILY LEADERBOARD
+SAVE GIFT + UPDATE LEADERBOARD
 */
 
 async function saveGift(
@@ -293,15 +414,20 @@ async function saveGift(
 ) {
 
   diamonds =
-    Number(diamonds || 0);
+    Number(
+      diamonds || 0
+    );
 
-  if (diamonds <= 0) {
+
+  if (
+    diamonds <= 0
+  ) {
     return;
   }
 
 
   /*
-  SAVE GIFT HISTORY
+  SAVE GIFT EVENT
   */
 
   const { error } =
@@ -321,6 +447,7 @@ async function saveGift(
 
       });
 
+
   if (error) {
 
     console.log(
@@ -333,7 +460,7 @@ async function saveGift(
 
 
   /*
-  UPDATE DAILY + WEEKLY TOTALS
+  GET CURRENT TOTALS
   */
 
   const {
@@ -362,6 +489,10 @@ async function saveGift(
   }
 
 
+  /*
+  UPDATE EXISTING CREATOR
+  */
+
   if (existing) {
 
     await supabase
@@ -370,13 +501,17 @@ async function saveGift(
 
         daily_diamonds:
           Number(
-            existing.daily_diamonds || 0
-          ) + diamonds,
+            existing.daily_diamonds ||
+            0
+          ) +
+          diamonds,
 
         weekly_diamonds:
           Number(
-            existing.weekly_diamonds || 0
-          ) + diamonds,
+            existing.weekly_diamonds ||
+            0
+          ) +
+          diamonds,
 
         updated_at:
           new Date()
@@ -387,7 +522,12 @@ async function saveGift(
         username
       );
 
+
   } else {
+
+    /*
+    CREATE CREATOR LEADERBOARD ROW
+    */
 
     await supabase
       .from("daily_leaderboard")
@@ -413,9 +553,12 @@ async function saveGift(
   console.log(
     `${username} +${diamonds} diamonds`
   );
-
 }
 
+
+/*
+SCHEDULE RECONNECT
+*/
 
 function scheduleReconnect(
   username,
@@ -423,14 +566,18 @@ function scheduleReconnect(
 ) {
 
   if (
-    reconnectTimers.has(username)
+    reconnectTimers.has(
+      username
+    )
   ) {
     return;
   }
 
+
   console.log(
     `Retrying @${username} in ${delay / 1000} seconds`
   );
+
 
   const timer =
     setTimeout(
@@ -448,15 +595,21 @@ function scheduleReconnect(
       delay
     );
 
+
   reconnectTimers.set(
     username,
     timer
   );
-
 }
 
 
-function connectCreator(username) {
+/*
+CONNECT CREATOR TO EULERSTREAM
+*/
+
+function connectCreator(
+  username
+) {
 
   const oldConnection =
     creatorConnections.get(
@@ -473,6 +626,7 @@ function connectCreator(username) {
         WebSocket.CONNECTING
     )
   ) {
+
     return;
   }
 
@@ -488,7 +642,9 @@ function connectCreator(username) {
 
 
   const ws =
-    new WebSocket(wsUrl);
+    new WebSocket(
+      wsUrl
+    );
 
 
   creatorConnections.set(
@@ -496,6 +652,10 @@ function connectCreator(username) {
     ws
   );
 
+
+  /*
+  CONNECTED
+  */
 
   ws.on(
     "open",
@@ -508,6 +668,10 @@ function connectCreator(username) {
     }
   );
 
+
+  /*
+  RECEIVE TIKTOK EVENTS
+  */
 
   ws.on(
     "message",
@@ -526,6 +690,7 @@ function connectCreator(username) {
             payload.messages
           )
         ) {
+
           return;
         }
 
@@ -542,9 +707,14 @@ function connectCreator(username) {
               ""
             );
 
+
           const lowerType =
             type.toLowerCase();
 
+
+          /*
+          MARK CREATOR LIVE
+          */
 
           if (
             lowerType.includes(
@@ -571,11 +741,16 @@ function connectCreator(username) {
           }
 
 
+          /*
+          IGNORE NON-GIFT EVENTS
+          */
+
           if (
             !lowerType.includes(
               "gift"
             )
           ) {
+
             continue;
           }
 
@@ -610,6 +785,7 @@ function connectCreator(username) {
           if (
             diamondCount <= 0
           ) {
+
             continue;
           }
 
@@ -639,13 +815,22 @@ function connectCreator(username) {
             true;
 
 
+          /*
+          WAIT FOR FINAL STREAK EVENT
+          */
+
           if (
             repeatCount > 1 &&
             repeatEnd === false
           ) {
+
             continue;
           }
 
+
+          /*
+          BUILD UNIQUE EVENT KEY
+          */
 
           const eventKey =
             messageId
@@ -653,11 +838,16 @@ function connectCreator(username) {
               : `${username}:${giftName}:${diamondCount}:${repeatCount}`;
 
 
+          /*
+          PREVENT DUPLICATE GIFTS
+          */
+
           if (
             processedEvents.has(
               eventKey
             )
           ) {
+
             continue;
           }
 
@@ -680,6 +870,11 @@ function connectCreator(username) {
           );
 
 
+          /*
+          IMPORTANT:
+          DO NOT MULTIPLY BY REPEAT COUNT
+          */
+
           const totalDiamonds =
             diamondCount;
 
@@ -697,6 +892,7 @@ function connectCreator(username) {
 
         }
 
+
       } catch (err) {
 
         console.log(
@@ -710,6 +906,10 @@ function connectCreator(username) {
   );
 
 
+  /*
+  CONNECTION CLOSED
+  */
+
   ws.on(
     "close",
     (code) => {
@@ -718,85 +918,130 @@ function connectCreator(username) {
         username
       );
 
+
       liveCreators.delete(
         username
       );
 
 
-      if (code === 4404) {
+      /*
+      CREATOR NOT LIVE
+      */
+
+      if (
+        code === 4404
+      ) {
 
         console.log(
           `@${username} not detected LIVE yet. Retrying automatically.`
         );
 
+
         scheduleReconnect(
           username,
           30000
         );
 
+
         return;
       }
 
 
-      if (code === 4005) {
+      /*
+      LIVE ENDED
+      */
+
+      if (
+        code === 4005
+      ) {
 
         console.log(
           `@${username} LIVE ended. Retrying automatically.`
         );
 
+
         scheduleReconnect(
           username,
           30000
         );
 
+
         return;
       }
 
 
-      if (code === 4006) {
+      /*
+      CONNECTION INACTIVE
+      */
+
+      if (
+        code === 4006
+      ) {
 
         console.log(
           `@${username} connection inactive. Reconnecting.`
         );
+
 
         scheduleReconnect(
           username,
           10000
         );
 
+
         return;
       }
 
 
-      if (code === 4429) {
+      /*
+      CONNECTION LIMIT
+      */
+
+      if (
+        code === 4429
+      ) {
 
         console.log(
           `@${username} connection limit reached. Retrying in 60 seconds.`
         );
+
 
         scheduleReconnect(
           username,
           60000
         );
 
+
         return;
       }
 
 
-      if (code === 4500) {
+      /*
+      TIKTOK CLOSED CONNECTION
+      */
+
+      if (
+        code === 4500
+      ) {
 
         console.log(
           `TikTok closed @${username} connection. Retrying.`
         );
+
 
         scheduleReconnect(
           username,
           15000
         );
 
+
         return;
       }
 
+
+      /*
+      UNKNOWN DISCONNECT
+      */
 
       console.log(
         `Disconnected @${username} code ${code}. Retrying.`
@@ -811,6 +1056,10 @@ function connectCreator(username) {
     }
   );
 
+
+  /*
+  WEBSOCKET ERROR
+  */
 
   ws.on(
     "error",
@@ -837,6 +1086,7 @@ loadCreators()
 
       await updateCreatorAvatars();
 
+
       for (
         let i = 0;
         i < creators.length;
@@ -845,6 +1095,7 @@ loadCreators()
 
         const username =
           creators[i];
+
 
         setTimeout(
           () => {
@@ -902,6 +1153,7 @@ app.get(
         error.message
       );
 
+
       return res
         .status(500)
         .json({
@@ -918,6 +1170,7 @@ app.get(
         "Creator profile error:",
         creatorError.message
       );
+
 
       return res
         .status(500)
@@ -1003,6 +1256,7 @@ setInterval(
     const now =
       new Date();
 
+
     if (
       now.getDay() === 1 &&
       now.getHours() === 0 &&
@@ -1017,6 +1271,10 @@ setInterval(
   60000
 );
 
+
+/*
+START SERVER
+*/
 
 app.listen(
   PORT,
