@@ -35,14 +35,22 @@ const supabase = createClient(
 );
 
 
-const creators = [
-  "crymakesvideos",
-  "frcohen40",
-  "__eacxo",
-  "kaitlynnalexx13",
-  "cala.mari456",
-  "mhvortex",
-];
+let creators = [];
+
+async function loadCreators() {
+  const { data, error } = await supabase
+    .from("creators")
+    .select("username");
+
+  if (error) {
+    console.log("Creator load error:", error.message);
+    return;
+  }
+
+  creators = data.map((creator) => creator.username);
+
+  console.log("Loaded creators:", creators);
+}
 
 
 const liveCreators = new Set();
@@ -637,11 +645,15 @@ saveGift(
 
 
 
-for (const username of creators) {
+loadCreators().then(() => {
 
-  connectCreator(username);
+  for (const username of creators) {
 
-}
+    connectCreator(username);
+
+  }
+
+});
 
 
 
