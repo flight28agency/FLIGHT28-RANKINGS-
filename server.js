@@ -757,7 +757,7 @@ async (req, res) => {
     await supabase
       .from("daily_leaderboard")
      .select(
-"username, daily_diamonds, weekly_diamonds"
+"username, daily_diamonds, weekly_diamonds, avatar_url"
 );
 
 
@@ -797,18 +797,21 @@ async (req, res) => {
 
 
 
-       return {
+      return {
 
-  username,
+username,
 
-  daily:
-    creator?.daily_diamonds || 0,
+avatar_url:
+creator?.avatar_url || null,
 
-  weekly:
-    creator?.weekly_diamonds || 0,
+daily:
+creator?.daily_diamonds || 0,
 
-  live:
-    liveCreators.has(username)
+weekly:
+creator?.weekly_diamonds || 0,
+
+live:
+liveCreators.has(username)
 
 };
 
@@ -816,8 +819,7 @@ async (req, res) => {
       })
       .sort(
         (a,b) =>
-          b.diamonds -
-          a.diamonds
+          b.daily - a.daily
       );
 
 
