@@ -759,6 +759,12 @@ async (req, res) => {
 .select(
 "username, daily_diamonds, weekly_diamonds"
 );
+  const { data: creatorProfiles, error: creatorError } =
+await supabase
+.from("creators")
+.select(
+"username, avatar_url, display_name"
+);
 
 
 
@@ -785,8 +791,32 @@ async (req, res) => {
 
 
   const leaderboard =
-    creators
-      .map((username) => {
+   const profile =
+creatorProfiles?.find(
+(profile) =>
+profile.username === username
+);
+
+return {
+
+username,
+
+display_name:
+profile?.display_name || username,
+
+avatar_url:
+profile?.avatar_url || null,
+
+daily:
+creator?.daily_diamonds || 0,
+
+weekly:
+creator?.weekly_diamonds || 0,
+
+live:
+liveCreators.has(username)
+
+};
 
 
         const creator =
