@@ -48,7 +48,7 @@ console.log(
 
 
 let creators = [];
-
+let lastDailyReset = "";
 
 /*
 LOAD CREATORS
@@ -1257,10 +1257,16 @@ setInterval(
       new Date();
 
 
-    if (
+   const today =
+  now.toISOString().split("T")[0];
+
+if (
   now.getHours() === 0 &&
-  now.getMinutes() === 0
+  now.getMinutes() === 0 &&
+  lastDailyReset !== today
 ) {
+
+  lastDailyReset = today;
 
   saveDailyHistory()
     .then(() => {
