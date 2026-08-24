@@ -180,12 +180,19 @@ if (currentPeriod === "daily") {
 
   let diff = Math.max(0, target-now);
   const h = Math.floor(diff / 3600000);
-  diff -= h*3600000;
-  const m = Math.floor(diff / 60000);
-  diff -= m*60000;
-  const s = Math.floor(diff / 1000);
-  document.querySelector("#countdown").textContent =
-    `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  const d = Math.floor(diff / 86400000);
+diff -= d * 86400000;
+
+const h = Math.floor(diff / 3600000);
+diff -= h * 3600000;
+
+const m = Math.floor(diff / 60000);
+diff -= m * 60000;
+
+const s = Math.floor(diff / 1000);
+
+document.querySelector("#countdown").textContent =
+`${d}D ${h}H ${m}M ${s}S`;
 }
 
 setInterval(updateCountdown,1000);
